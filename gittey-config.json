@@ -1,42 +1,50 @@
 {
-    "branchPrefix": {
-        "separator": "",
-        "validator": "",
-        "prefixes": {}
+  "branchPrefix": {
+    "separator": "",
+    "validator": "",
+    "prefixes": {}
+  },
+  "commitPrefix": {
+    "separator": " ",
+    "validator": "^.{1,45}$",
+    "prefixes": {
+      "F": "Feature (<= 8 LoC)",
+      "B": "Bug fix (<= 8 LoC)",
+      "R": "Test-supported Procedural Refactoring",
+      "t": "Test only",
+      "d": "Developer documentation (non-user facing)",
+      "a": "Automated formatting / code generation",
+      "r": "Provable (manual) refactoring",
+      "c": "Comments (add/delete)",
+      "e": "Environment (non-code) changes (for development)",
+      "F!!": "Feature (> 8 LoC)",
+      "B!!": "Bug fix (> 8 LoC)",
+      "R!!": "Non-provable refactoring",
+      "***": "Does not compile -- intermediate step"
+    }
+  },
+  "verboseMode": false,
+  "aliases": [
+    {
+      "name": "test",
+      "command": "gittey clear && npm test && gittey commit && git push && gittey date"
     },
-    "commitPrefix": {
-        "separator": " ",
-        "validator": "^.{1,45}$",
-        "prefixes": {
-            "F": "Feature (<= 8 LoC)",
-            "B": "Bug fix (<= 8 LoC)",
-            "R": "Test-supported Procedural Refactoring",
-            "t": "Test only",
-            "d": "Developer documentation (non-user facing)",
-            "a": "Automated formatting / code generation",
-            "r": "Provable (manual) refactoring",
-            "c": "Comments (add/delete)",
-            "e": "Environment (non-code) changes (for development)",
-            "F!!": "Feature (> 8 LoC)",
-            "B!!": "Bug fix (> 8 LoC)",
-            "R!!": "Non-provable refactoring",
-            "***": "Does not compile -- intermediate step"
-        }
+    {
+      "name": "clear",
+      "command": "cls && gittey date"
     },
-    "verboseMode": false,
-    "aliases": [
-        {
-            "name": "test",
-            "command": "gittey clear && npm test && gittey commit && git push && gittey date"
-        },
-        {
-            "name": "clear",
-            "command": "cls && gittey date"
-        },
-        {
-          "name": "date",
-          "command": "powershell date"
-        }
-    ],
-    "collaborators": []
+    {
+      "name": "date",
+      "command": "powershell date"
+    },
+    {
+      "name": "build",
+      "command": "gittey clear && npm run compile"
+    },
+    {
+      "name": "compile",
+      "command": "gittey build"
+    }
+  ],
+  "collaborators": []
 }
