@@ -1,6 +1,7 @@
 import { getContainer, IContainer } from "@/container";
-import { ITask, none, TaskConstructor } from "@/generalTypes";
+import { none } from "@/generalTypes";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
+import { ITask, TaskConstructor } from "@/task";
 import { expect } from "chai";
 import { TimeHelper } from "./helpers";
 

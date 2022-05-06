@@ -1,6 +1,16 @@
 import { IContainer } from "./container";
-import { Activity, ITask, none, Size, TaskConstructor, Unsized } from "./generalTypes";
+import { Activity, none, Size, Unsized } from "./generalTypes";
 import { IStateChange, StateChangeConstructor } from "./stateChange";
+
+export abstract class ITask {
+  abstract name: string;
+  abstract size: Size | Unsized;
+  abstract states: IStateChange;
+  abstract currentState: IStateChange;
+  abstract changeState(stateName: string, activity: Activity, activityDescriptor: string) : void
+}
+
+export type TaskConstructor = (name: string, size?: Size) => ITask;
 
 class Task extends ITask {
   name: string;
