@@ -10,7 +10,7 @@ describe('Task should', () => {
   let dateHelper: TimeHelper;
   let builder: TaskConstructor;
   let stateBuilder: StateChangeConstructor;
-  let initialState : IStateChange;
+  let initialState: IStateChange;
 
   beforeEach(() => {
     container = getContainer();
@@ -34,9 +34,10 @@ describe('Task should', () => {
   });
 
   it('build a task with the given name', () => {
-    let reset = dateHelper.holdDate();
-    const state = stateBuilder('Created', 'Non-Active', none);
-    reset();
+    const state =
+      dateHelper.resetAfter(() =>
+        stateBuilder('Created', 'Non-Active', none)
+      );
 
     const result = builder('test task');
 
@@ -47,9 +48,10 @@ describe('Task should', () => {
   });
 
   it('build a task with the different name', () => {
-    let reset = dateHelper.holdDate();
-    const state = stateBuilder('Created', 'Non-Active', none);
-    reset();
+    const state =
+      dateHelper.resetAfter(() =>
+        stateBuilder('Created', 'Non-Active', none)
+      );
 
     const result = builder('my item', 'Tiny');
 
@@ -62,9 +64,10 @@ describe('Task should', () => {
   it('record a state change', () => {
     const task = builder('new Item');
 
-    let reset = dateHelper.holdDate();
-    const state = stateBuilder('ready', 'Active', 'ready is active because it means someone is working', initialState);
-    reset();
+    const state =
+      dateHelper.resetAfter(() =>
+        stateBuilder('ready', 'Active', 'ready is active because it means someone is working', initialState)
+      );
 
     task.changeState('ready', 'Active', 'ready is active because it means someone is working');
 
@@ -86,25 +89,26 @@ describe('Task should', () => {
   });
 
   it('know its current state after three changes', () => {
-    let reset = dateHelper.holdDate();
-    const task = builder('new Item');
-    reset();
+    const task =
+      dateHelper.resetAfter(() =>
+        builder('new Item')
+      );
 
-    reset = dateHelper.holdDate();
-    task.changeState('ready', 'Non-Active', 'ready and waiting');
-    reset();
+    dateHelper.resetAfter(() =>
+      task.changeState('ready', 'Non-Active', 'ready and waiting')
+    );
 
     const firstChange = stateBuilder('ready', 'Non-Active', 'ready and waiting', initialState);
 
-    reset = dateHelper.holdDate();
-    task.changeState('started', 'Active', 'working to resolve');
-    reset()
+    dateHelper.resetAfter(() =>
+      task.changeState('started', 'Active', 'working to resolve')
+    );
 
     const secondChange = stateBuilder('started', 'Active', 'working to resolve', firstChange);
 
-    reset = dateHelper.holdDate();
-    task.changeState('finished', 'Closed', 'all done');
-    reset();
+    dateHelper.resetAfter(() =>
+      task.changeState('finished', 'Closed', 'all done')
+    );
 
     const thirdChange = stateBuilder('finished', 'Closed', 'all done', secondChange);
 

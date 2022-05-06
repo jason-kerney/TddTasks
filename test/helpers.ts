@@ -37,7 +37,7 @@ export class TimeHelper {
     container.register(Date, () => th.getDate());
   }
 
-  holdDate() {
+  private holdDate() {
     let r = this._date;
     let th = this;
     return function reset() {
