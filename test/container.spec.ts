@@ -59,7 +59,7 @@ describe('The Container should', () => {
   });
 
   it('give back a function that returns none when none are registered', () =>{
-    expect(() => container.build<any>('TestThing2')).throws('No "TestThing2" provider registered');
+    expect(() => container.buildA<ItemType>(ItemType)).throws('No "ItemType" provider registered');
   });
 
   it('give back a function that returns none when calling something that is not registered registered', () =>{
