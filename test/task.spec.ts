@@ -19,10 +19,10 @@ describe('Task should', () => {
 
     stateBuilder = container.build(IStateChange) as StateChangeConstructor;
 
-    let reset = dateHelper.holdDate();
-    initialState = stateBuilder('Created', 'Non-Active', none);
-    reset();
-
+    initialState =
+      dateHelper.resetAfter(() =>
+        stateBuilder('Created', 'Non-Active', none)
+      );
 
     builder = container.build(ITask) as TaskConstructor;
   });

@@ -45,6 +45,15 @@ export class TimeHelper {
     };
   }
 
+  resetAfter<T>(doer: () => T) {
+    let reset = this.holdDate();
+    try {
+      return doer();
+    } finally {
+      reset();
+    }
+  }
+
   peekDate(): Date {
     return this._date;
   }

@@ -2,15 +2,21 @@ import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
 import { ITask, TaskConstructor } from "@/task";
+import { TimeHelper } from "./helpers";
 
 describe('Walrus Bucket should', () => {
     let container: IContainer;
     let walrusBucketConstructor: WalrusBucketConstructor;
     let taskConstructor: TaskConstructor;
     let sut: IWalrusBucket;
+    let dateHelper : TimeHelper;
 
     beforeEach(() => {
         container = getContainer();
+
+        dateHelper = new TimeHelper();
+        dateHelper.registerWith(container);
+
         taskConstructor = container.build(ITask);
         walrusBucketConstructor = container.build(IWalrusBucket);
         sut = walrusBucketConstructor();
