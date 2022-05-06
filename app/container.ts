@@ -10,7 +10,7 @@ export type Factory<T> = (factory: IContainer) => Builder<T>
 export abstract class IContainer {
   abstract register<T>(type: abstract new(...parameters: any) => T, factory: Factory<T>) : any;
   abstract build<T>(type: abstract new(...parameters: any) => T) : Builder<T>;
-  abstract deregister(typeName: string) : void;
+  abstract deregister<T>(type: abstract new(...parameters: any) => T) : void;
 }
 
 function handle<T>(container: IContainer, value: Factory<T> | undefined) : Builder<T> | None {
@@ -52,8 +52,8 @@ class Container extends IContainer {
     return tmp;
   }
 
-  deregister(typeName: string) {
-    this.alt[typeName] = undefined;
+  deregister<T>(type: abstract new(...parameters: any) => T) {
+    this.alt[type.name] = undefined;
   }
 }
 
