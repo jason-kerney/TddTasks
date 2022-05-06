@@ -1,6 +1,7 @@
 import { stateChangeBuilder } from "./stateChange";
 import { taskBuilder } from "./task";
 import { none, None } from "./taskInterfaces";
+import { MapType } from "./map";
 
 export type Builder<T> = (...parameters: any) => T;
 export type Factory<T> = (factory: IContainer) => Builder<T>
@@ -9,10 +10,6 @@ export interface IContainer {
   register<T>(typeName: string, factory: Factory<T>) : any;
   build<T>(typeName: string) : Builder<T>;
   deregister(typeName: string);
-}
-
-type MapType = {
-  [id: string]: Factory<any> | undefined;
 }
 
 function handle<T>(container: IContainer, value: Factory<T> | undefined) : Builder<T> | None {
@@ -24,8 +21,8 @@ function handle<T>(container: IContainer, value: Factory<T> | undefined) : Build
 }
 
 class Container implements IContainer {
-  private map : MapType = {};
-  private alt : MapType = {};
+  private map : MapType<Factory<any>> = {};
+  private alt : MapType<Factory<any>> = {};
 
   constructor() {
     this.map['Now'] = (_factory) => () => { return new Date(Date.now()) };
