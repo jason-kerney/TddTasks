@@ -14,9 +14,9 @@ describe('Walrus Bucket should', () => {
     it('be registered with the container', () => {
         let r = walrusBucketConstructor();
 
-        expect(r).to.have.property('getTasks');
-        expect(r).to.have.property('getCompleteTasks');
-        expect(r).to.have.property('getActiveTasks');
-        expect(r).to.have.property('getNonActiveTasks');
+        expect(r).to.be.instanceOf(IWalrusBucket);
+        // expect(r).to.have.property('getCompleteTasks');
+        // expect(r).to.have.property('getActiveTasks');
+        // expect(r).to.have.property('getNonActiveTasks');
     });
 });
