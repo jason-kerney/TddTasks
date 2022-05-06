@@ -1,5 +1,3 @@
-import { IStateChange } from "./stateChange"
-
 export type Activity =
     | 'Non-Active'
     | 'Active'
