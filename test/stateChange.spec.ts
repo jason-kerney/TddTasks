@@ -18,11 +18,9 @@ describe('StateChange should', () => {
   });
 
   it('be registered with the container', () =>{
-    const expectedResult = builder('My new state', 'Non-Active', none);
+    const result = builder('My new state', 'Non-Active', none);
 
-    expect(expectedResult).to.have.property('stateName');
-    expect(expectedResult).to.have.property('date');
-    expect(expectedResult).to.have.property('next');
+    expect(result).to.be.instanceOf(IStateChange);
   });
 
   it('allow for a new state change to be created', () =>{

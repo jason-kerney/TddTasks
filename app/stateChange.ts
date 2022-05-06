@@ -1,7 +1,7 @@
 import { Activity, IStateChange, none, None, StateChangeConstructor } from "./taskInterfaces";
 import { Factory, IContainer } from "./container"
 
-class StateChange implements IStateChange {
+class StateChange extends IStateChange {
   stateName: string;
   date: Date;
   activity: Activity;
@@ -9,6 +9,7 @@ class StateChange implements IStateChange {
   next: IStateChange | None;
 
   constructor(stateName: string, activity: Activity, activityDescriptor: string | None, date: Date, previous : IStateChange | None = none) {
+    super();
     this.stateName = stateName;
     this.date = date;
     this.activity = activity;

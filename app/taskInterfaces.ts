@@ -16,14 +16,14 @@ export type Unsized = 'No Size'
 export type None = 'none'
 export const none : None = 'none'
 
-export interface IStateChange {
-    stateName: string;
-    date: Date;
-    activity: Activity;
-    activityDescriptor: string | None;
-    next: IStateChange | None;
-    getLast() : IStateChange;
-    getLastUpdateDate() : Date;
+export abstract class IStateChange {
+    abstract stateName: string;
+    abstract date: Date;
+    abstract activity: Activity;
+    abstract activityDescriptor: string | None;
+    abstract next: IStateChange | None;
+    abstract getLast() : IStateChange;
+    abstract getLastUpdateDate() : Date;
 }
 
 export type StateChangeConstructor = (stateName: string, activity: Activity, activityDescriptor: string | None, previous? : IStateChange) => IStateChange
