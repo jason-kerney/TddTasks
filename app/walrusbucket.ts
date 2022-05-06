@@ -1,19 +1,23 @@
 import { IContainer } from "@/container";
+import { ITask } from "./task";
 
 export abstract class IWalrusBucket {
-    // abstract getTasks();
+    abstract getAllTasks() : ITask[];
 
     // abstract getCompleteTasks();
-    
+
     // abstract getActiveTasks();
-    
+
     // abstract getNonActiveTasks();
 }
 
 export type WalrusBucketConstructor = () => IWalrusBucket;
 
 class WalrusBucket extends IWalrusBucket{
-    
+    getAllTasks(): ITask[] {
+      return [];
+    }
+
     constructor() {
         super();
     }
