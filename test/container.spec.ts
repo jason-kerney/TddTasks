@@ -17,6 +17,14 @@ class ItemType2 {
   }
 }
 
+class YesThing {
+  yes: boolean;
+
+  constructor(yes: boolean) {
+    this.yes = yes;
+  }
+}
+
 describe('The Container should', () => {
   var container : IContainer;
 
@@ -63,9 +71,9 @@ describe('The Container should', () => {
   });
 
   it('give back a function that returns none when calling something that is not registered registered', () =>{
-    container.register('TestThing', () => () => { yes: true });
+    container.register(YesThing.name, () => () => new YesThing(true));
 
-    expect(() => container.build<any>('TestThing2')).throws('No "TestThing2" provider registered');
+    expect(() => container.buildA<ItemType>(ItemType)).throws('No "ItemType" provider registered');
   });
 
   it('contain a builder for getting the date', () => {
