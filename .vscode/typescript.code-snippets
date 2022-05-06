@@ -10,4 +10,14 @@
         ],
         "description": ""
     },
+
+    "Intreface Method": {
+        "prefix": "interface-method",
+        "body": [
+            "${1:methodName}() {",
+            "\tisNotImplemented(this.$1.name);$0",
+            "}",
+        ],
+        "description": ""
+    },
 }
