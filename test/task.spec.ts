@@ -17,14 +17,14 @@ describe('Task should', () => {
     dateHelper = new TimeHelper();
     dateHelper.registerWith(container);
 
-    stateBuilder = container.build<IStateChange>('IStateChange') as StateChangeConstructor;
+    stateBuilder = container.build<IStateChange>(IStateChange) as StateChangeConstructor;
 
     let reset = dateHelper.holdDate();
     initialState = stateBuilder('Created', 'Non-Active', none);
     reset();
 
 
-    builder = container.build<ITask>('ITask') as TaskConstructor;
+    builder = container.build<ITask>(ITask) as TaskConstructor;
   });
 
   it('be registered with the container', () => {

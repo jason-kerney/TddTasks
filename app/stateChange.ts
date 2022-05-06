@@ -44,7 +44,7 @@ class StateChange extends IStateChange {
 export const stateChangeBuilder =
   function(factory: IContainer){
     const ctor: StateChangeConstructor = (name: string, activity: Activity, activityDescriptor: string | None, previous : IStateChange | None = none) => {
-      const date = factory.build<Date>(Date.name)();
+      const date = factory.build<Date>(Date)();
 
       return new StateChange(name, activity, activityDescriptor, date, previous);
     };

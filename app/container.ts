@@ -9,8 +9,7 @@ export type Factory<T> = (factory: IContainer) => Builder<T>
 
 export abstract class IContainer {
   abstract register<T>(typeName: string, factory: Factory<T>) : any;
-  abstract build<T>(typeName: string) : Builder<T>;
-  abstract buildA<T>(type: abstract new(...parameters: any) => T) : Builder<T>;
+  abstract build<T>(type: abstract new(...parameters: any) => T) : Builder<T>;
   abstract deregister(typeName: string) : void;
 }
 
@@ -38,21 +37,7 @@ class Container extends IContainer {
     this.alt[typeName] = factory;
   }
 
-  build<T>(typeName: string) : Builder<T> {
-    let tmp = handle(this, this.alt[typeName])
-    if (tmp !== none) {
-      return tmp;
-    }
-
-    tmp = handle(this, this.map[typeName]);
-    if (tmp === none) {
-      throw new Error(`No "${typeName}" provider registered`);
-    }
-
-    return tmp;
-  }
-
-  buildA<T>(type: abstract new(...parameters: any) => T) : Builder<T> {
+  build<T>(type: abstract new(...parameters: any) => T) : Builder<T> {
     const typeName = type.name;
     let tmp = handle(this, this.alt[typeName])
     if (tmp !== none) {

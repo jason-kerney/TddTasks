@@ -8,7 +8,7 @@ describe('Walrus Bucket should', () => {
 
     beforeEach(() => {
         container = getContainer();
-        walrusBucketConstructor = container.build<IWalrusBucket>('IWalrusBucket');
+        walrusBucketConstructor = container.build<IWalrusBucket>(IWalrusBucket);
     });
 
     it('be registered with the container', () => {
