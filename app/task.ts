@@ -1,7 +1,7 @@
 import { IContainer } from "./container";
 import { Activity, IStateChange, ITask, none, Size, StateChangeConstructor, TaskConstructor, Unsized } from "./taskInterfaces";
 
-class Task implements ITask {
+class Task extends ITask {
   name: string;
   size: Size | Unsized;
   states: IStateChange;
@@ -9,6 +9,7 @@ class Task implements ITask {
   private stateBuilder: StateChangeConstructor;
 
   constructor(name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor) {
+    super();
     this.name = name;
     this.size = size;
     this.stateBuilder = stateBuilder;

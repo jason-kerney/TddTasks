@@ -28,12 +28,12 @@ export abstract class IStateChange {
 
 export type StateChangeConstructor = (stateName: string, activity: Activity, activityDescriptor: string | None, previous? : IStateChange) => IStateChange
 
-export interface ITask {
-    name: string;
-    size: Size | Unsized;
-    states: IStateChange;
-    currentState: IStateChange;
-    changeState: (stateName: string, activity: Activity, activityDescriptor: string | None) => void;
+export abstract class ITask {
+    abstract name: string;
+    abstract size: Size | Unsized;
+    abstract states: IStateChange;
+    abstract currentState: IStateChange;
+    abstract changeState(stateName: string, activity: Activity, activityDescriptor: string) : void
 }
 
 export type TaskConstructor = (name: string, size?: Size) => ITask;

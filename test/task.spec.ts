@@ -19,9 +19,7 @@ describe('Task should', () =>{
   it('be registered with the container', () =>{
     const result = builder('test task');
 
-    expect(result).to.have.property('name');
-    expect(result).to.have.property('size');
-    expect(result).to.have.property('states');
+    expect(result).to.be.instanceOf(ITask);
   });
 
   it('build a task with the given name', () => {
