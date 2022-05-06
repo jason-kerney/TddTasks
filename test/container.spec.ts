@@ -1,6 +1,14 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 
+class ItemType {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
 describe('The Container should', () => {
   var container : IContainer;
 
@@ -9,12 +17,11 @@ describe('The Container should', () => {
   });
 
   it('give back the function to construct an item registered under a name', () =>{
-    let item = { Name: 'test thing' };
-    type ItemType = typeof item;
+    let item = new ItemType('test thing');
     let factory = () => () => item;
 
-    container.register<ItemType>('TestThing', factory);
-    const expectedResult = container.build<ItemType>('TestThing')();
+    container.register<ItemType>(ItemType.name, factory);
+    const expectedResult = container.buildA<ItemType>(ItemType)();
 
     expect(expectedResult).equal(item);
   });
