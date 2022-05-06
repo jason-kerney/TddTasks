@@ -27,7 +27,7 @@
     "aliases": [
         {
             "name": "test",
-            "command": "gittey clear && npm test && gittey commit && gittey date"
+            "command": "gittey clear && npm test && gittey commit && git push && gittey date"
         },
         {
             "name": "clear",
