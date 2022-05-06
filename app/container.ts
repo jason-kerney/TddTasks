@@ -1,4 +1,4 @@
-import { stateChangeBuilder } from "./stateChange";
+import { IStateChange, stateChangeBuilder } from "./stateChange";
 import { taskBuilder } from "./task";
 import { none, None } from "./generalTypes";
 import { MapType } from "./map";
@@ -28,7 +28,7 @@ class Container extends IContainer {
   constructor() {
     super();
     this.map['Now'] = (_factory) => () => { return new Date(Date.now()) };
-    this.map['IStateChange'] = stateChangeBuilder;
+    this.map[IStateChange.name] = stateChangeBuilder;
     this.map['ITask'] = taskBuilder;
     this.map['IWalrusBucket'] = walrusBucketBuilder;
   }
