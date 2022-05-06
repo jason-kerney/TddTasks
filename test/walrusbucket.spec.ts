@@ -15,8 +15,5 @@ describe('Walrus Bucket should', () => {
         let r = walrusBucketConstructor();
 
         expect(r).to.be.instanceOf(IWalrusBucket);
-        // expect(r).to.have.property('getCompleteTasks');
-        // expect(r).to.have.property('getActiveTasks');
-        // expect(r).to.have.property('getNonActiveTasks');
     });
 });
