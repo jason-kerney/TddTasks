@@ -1,5 +1,16 @@
-import { Activity, IStateChange, none, None, StateChangeConstructor } from "./generalTypes";
+import { Activity, none, None, StateChangeConstructor } from "./generalTypes";
 import { Factory, IContainer } from "./container"
+
+
+export abstract class IStateChange {
+  abstract stateName: string;
+  abstract date: Date;
+  abstract activity: Activity;
+  abstract activityDescriptor: string | None;
+  abstract next: IStateChange | None;
+  abstract getLast() : IStateChange;
+  abstract getLastUpdateDate() : Date;
+}
 
 class StateChange extends IStateChange {
   stateName: string;
