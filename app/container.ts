@@ -7,10 +7,10 @@ import { walrusBucketBuilder } from "./walrusbucket";
 export type Builder<T> = (...parameters: any) => T;
 export type Factory<T> = (factory: IContainer) => Builder<T>
 
-export interface IContainer {
-  register<T>(typeName: string, factory: Factory<T>) : any;
-  build<T>(typeName: string) : Builder<T>;
-  deregister(typeName: string) : void;
+export abstract class IContainer {
+  abstract register<T>(typeName: string, factory: Factory<T>) : any;
+  abstract build<T>(typeName: string) : Builder<T>;
+  abstract deregister(typeName: string) : void;
 }
 
 function handle<T>(container: IContainer, value: Factory<T> | undefined) : Builder<T> | None {
@@ -21,11 +21,12 @@ function handle<T>(container: IContainer, value: Factory<T> | undefined) : Build
   return none;
 }
 
-class Container implements IContainer {
+class Container extends IContainer {
   private map : MapType<Factory<any>> = {};
   private alt : MapType<Factory<any>> = {};
 
   constructor() {
+    super();
     this.map['Now'] = (_factory) => () => { return new Date(Date.now()) };
     this.map['IStateChange'] = stateChangeBuilder;
     this.map['ITask'] = taskBuilder;
