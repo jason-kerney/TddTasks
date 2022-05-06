@@ -1,23 +1,28 @@
 import { IContainer } from "@/container";
-import { isNotImplemented } from "@/interfaceHelper";
+import { addMethod, isNotImplemented } from "@/interfaceHelper";
 
 export class IWalrusBucket {
-    getTasks() {
-        isNotImplemented(this.getTasks.name);
-    }
+    // getTasks() {
+    //     isNotImplemented(this.getTasks.name);
+    // }
 
-    getCompleteTasks() {
-        isNotImplemented(this.getCompleteTasks.name);
-    }
+    // getCompleteTasks() {
+    //     isNotImplemented(this.getCompleteTasks.name);
+    // }
     
-    getActiveTasks() {
-        isNotImplemented(this.getActiveTasks.name);
-    }
+    // getActiveTasks() {
+    //     isNotImplemented(this.getActiveTasks.name);
+    // }
     
-    getNonActiveTasks() {
-        isNotImplemented(this.getNonActiveTasks.name);
-    }
+    // getNonActiveTasks() {
+    //     isNotImplemented(this.getNonActiveTasks.name);
+    // }
 }
+
+addMethod(IWalrusBucket, 'getTasks');
+addMethod(IWalrusBucket, 'getCompleteTasks');
+addMethod(IWalrusBucket, 'getActiveTasks');
+addMethod(IWalrusBucket, 'getNonActiveTasks');
 
 export type WalrusBucketConstructor = () => IWalrusBucket;
 
