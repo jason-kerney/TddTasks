@@ -2,7 +2,7 @@
   "name": "tasks",
   "version": "1.0.0",
   "description": "A tool to practice TDD in legacy code",
-  "scripts":  {
+  "scripts": {
     "precompile": "rimraf app/**/*.js test/**/*.js",
     "compile": "tsc",
     "pretest": "rimraf app/**/*.js test/**/*.js",
