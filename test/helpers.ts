@@ -34,7 +34,7 @@ export class TimeHelper {
 
   registerWith(container: IContainer) {
     let th = this;
-    container.register<Date>(Date, () => th.getDate());
+    container.register(Date, () => th.getDate());
   }
 
   holdDate() {

@@ -32,7 +32,7 @@ class Task extends ITask {
 
 function builder(factory: IContainer): TaskConstructor {
   return function (name: string, size: Size | Unsized = 'No Size'): ITask {
-    return new Task(name, size, factory.build<IStateChange>(IStateChange));
+    return new Task(name, size, factory.build(IStateChange));
   };
 }
 

@@ -15,7 +15,7 @@ describe('StateChange should', () => {
     dateHandler = new TimeHelper()
     dateHandler.registerWith(container);
 
-    builder = container.build<IStateChange>(IStateChange) as StateChangeConstructor;
+    builder = container.build(IStateChange) as StateChangeConstructor;
   });
 
   it('be registered with the container', () =>{
