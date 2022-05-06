@@ -1,6 +1,7 @@
-import { Activity, none, None, StateChangeConstructor } from "./generalTypes";
+import { Activity, none, None } from "./generalTypes";
 import { Factory, IContainer } from "./container"
 
+export type StateChangeConstructor = (stateName: string, activity: Activity, activityDescriptor: string | None, previous? : IStateChange) => IStateChange
 
 export abstract class IStateChange {
   abstract stateName: string;

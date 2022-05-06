@@ -1,6 +1,6 @@
 import { getContainer, IContainer } from "@/container";
-import { none, StateChangeConstructor } from "@/generalTypes";
-import { IStateChange } from "@/stateChange";
+import { none } from "@/generalTypes";
+import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { expect } from "chai";
 import { TimeHelper } from "./helpers";
 

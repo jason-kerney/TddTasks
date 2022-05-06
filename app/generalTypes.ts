@@ -18,8 +18,6 @@ export type Unsized = 'No Size'
 export type None = 'none'
 export const none : None = 'none'
 
-export type StateChangeConstructor = (stateName: string, activity: Activity, activityDescriptor: string | None, previous? : IStateChange) => IStateChange
-
 export abstract class ITask {
     abstract name: string;
     abstract size: Size | Unsized;

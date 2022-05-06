@@ -1,6 +1,6 @@
 import { IContainer } from "./container";
-import { Activity, ITask, none, Size, StateChangeConstructor, TaskConstructor, Unsized } from "./generalTypes";
-import { IStateChange } from "./stateChange";
+import { Activity, ITask, none, Size, TaskConstructor, Unsized } from "./generalTypes";
+import { IStateChange, StateChangeConstructor } from "./stateChange";
 
 class Task extends ITask {
   name: string;
