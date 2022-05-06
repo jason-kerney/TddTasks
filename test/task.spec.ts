@@ -1,5 +1,5 @@
 import { getContainer, IContainer } from "@/container";
-import { Activity, IStateChange, ITask, none, StateChangeConstructor, TaskConstructor } from "@/taskInterfaces";
+import { Activity, IStateChange, ITask, none, StateChangeConstructor, TaskConstructor } from "@/generalTypes";
 import { expect } from "chai";
 import { TimeHelper } from "./helpers";
 

@@ -1,6 +1,6 @@
 import { stateChangeBuilder } from "./stateChange";
 import { taskBuilder } from "./task";
-import { none, None } from "./taskInterfaces";
+import { none, None } from "./generalTypes";
 import { MapType } from "./map";
 import { walrusBucketBuilder } from "./walrusbucket";
 

@@ -1,4 +1,4 @@
-import { Activity, IStateChange, none, None, StateChangeConstructor } from "./taskInterfaces";
+import { Activity, IStateChange, none, None, StateChangeConstructor } from "./generalTypes";
 import { Factory, IContainer } from "./container"
 
 class StateChange extends IStateChange {
