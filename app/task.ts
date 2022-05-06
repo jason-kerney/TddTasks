@@ -17,7 +17,7 @@ class Task implements ITask {
   }
 
   changeState(stateName: string, activity: Activity, activityDescriptor: string) : void {
-    this.stateBuilder(stateName, activity, activityDescriptor, this.states);
+    this.states = this.stateBuilder(stateName, activity, activityDescriptor, this.states);
 
     this.currentState = this.states.getLast();
   }

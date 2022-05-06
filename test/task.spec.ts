@@ -76,7 +76,7 @@ describe('Task should', () =>{
     expect(task.currentState).to.deep.equal(task.states.next);
   });
 
-  it('know its current state after a three changes', () => {
+  it('know its current state after three changes', () => {
     const task = builder('new Item');
 
     task.changeState('ready', 'Non-Active', 'ready and waiting');

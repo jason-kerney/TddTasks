@@ -40,10 +40,10 @@ export const stateChangeBuilder =
       const date = factory.build<Date>('Now')();
 
       if(previous === none){
-        return new StateChange(name, activity, activityDescriptor, date)
+        return new StateChange(name, activity, activityDescriptor, date);
       }
 
-      new StateChange(name, activity, activityDescriptor, date, previous)
+      new StateChange(name, activity, activityDescriptor, date, previous);
       return previous;
     };
 
