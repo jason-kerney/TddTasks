@@ -22,10 +22,6 @@ export abstract class IStateChange {
   getFirstUpdateDate(): Date {
     return this.getFirst().date;
   }
-
-  getLastUpdateDate(): Date {
-    return this.date;
-  }
 }
 
 class StateChange extends IStateChange {

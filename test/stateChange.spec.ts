@@ -94,8 +94,7 @@ describe('StateChange should', () => {
     let expectedDate = dateHandler.peekDate();
 
     const actual2 = builder('third', 'Non-Active', 'third thing', actual1);
-
-    expect(actual2.getLastUpdateDate()).to.deep.equal(actual2.date);
+    
     expect(actual2.getFirstUpdateDate()).to.deep.equal(actual1.date);
   });
 });
