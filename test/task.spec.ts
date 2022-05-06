@@ -3,22 +3,31 @@ import { none } from "@/generalTypes";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { ITask, TaskConstructor } from "@/task";
 import { expect } from "chai";
-import { TimeHelper } from "./helpers";
+import { clean, TimeHelper } from "./helpers";
 
-describe('Task should', () =>{
+describe('Task should', () => {
   let container: IContainer;
-  let dateHelper : TimeHelper;
-  let builder : TaskConstructor;
+  let dateHelper: TimeHelper;
+  let builder: TaskConstructor;
+  let stateBuilder: StateChangeConstructor;
+  let initialState : IStateChange;
 
   beforeEach(() => {
     container = getContainer();
     dateHelper = new TimeHelper();
     dateHelper.registerWith(container);
 
+    stateBuilder = container.build<IStateChange>('IStateChange') as StateChangeConstructor;
+
+    let reset = dateHelper.holdDate();
+    initialState = stateBuilder('Created', 'Non-Active', none);
+    reset();
+
+
     builder = container.build<ITask>('ITask') as TaskConstructor;
   });
 
-  it('be registered with the container', () =>{
+  it('be registered with the container', () => {
     const result = builder('test task');
 
     expect(result).to.be.instanceOf(ITask);
@@ -26,7 +35,7 @@ describe('Task should', () =>{
 
   it('build a task with the given name', () => {
     let reset = dateHelper.holdDate();
-    const state = (container.build<IStateChange>('IStateChange') as StateChangeConstructor)('Created', 'Non-Active', none);
+    const state = stateBuilder('Created', 'Non-Active', none);
     reset();
 
     const result = builder('test task');
@@ -39,7 +48,7 @@ describe('Task should', () =>{
 
   it('build a task with the different name', () => {
     let reset = dateHelper.holdDate();
-    const state = (container.build<IStateChange>('IStateChange') as StateChangeConstructor)('Created', 'Non-Active', none);
+    const state = stateBuilder('Created', 'Non-Active', none);
     reset();
 
     const result = builder('my item', 'Tiny');
@@ -54,18 +63,18 @@ describe('Task should', () =>{
     const task = builder('new Item');
 
     let reset = dateHelper.holdDate();
-    const state = (container.build<IStateChange>('IStateChange') as StateChangeConstructor)('ready', 'Active', 'ready is active because it means someone is working');
+    const state = stateBuilder('ready', 'Active', 'ready is active because it means someone is working', initialState);
     reset();
 
     task.changeState('ready', 'Active', 'ready is active because it means someone is working');
 
-    expect(task.states.next).to.deep.equal(state);
+    expect(task.states).to.deep.equal(state);
   });
 
   it('know its current state initially', () => {
     const task = builder('new Item');
 
-    expect(task.currentState).to.deep.equal(task.states);
+    expect(task.states).to.deep.equal(task.states);
   });
 
   it('know its current state after a change', () => {
@@ -73,18 +82,39 @@ describe('Task should', () =>{
 
     task.changeState('ready', 'Active', 'ready is active because it means someone is working');
 
-    expect(task.currentState).to.deep.equal(task.states.next);
+    expect(task.states.getFirst()).to.deep.equal(initialState);
   });
 
   it('know its current state after three changes', () => {
+    let reset = dateHelper.holdDate();
     const task = builder('new Item');
+    reset();
 
+    reset = dateHelper.holdDate();
     task.changeState('ready', 'Non-Active', 'ready and waiting');
-    task.changeState('started', 'Active', 'working to resolve');
-    task.changeState('finished', 'Closed', 'all done');
+    reset();
 
-    const firstChange = task.states.next as IStateChange;
-    const secondChange = firstChange.next as IStateChange;
-    expect(task.currentState).to.deep.equal(secondChange.next);
+    const firstChange = stateBuilder('ready', 'Non-Active', 'ready and waiting', initialState);
+
+    reset = dateHelper.holdDate();
+    task.changeState('started', 'Active', 'working to resolve');
+    reset()
+
+    const secondChange = stateBuilder('started', 'Active', 'working to resolve', firstChange);
+
+    reset = dateHelper.holdDate();
+    task.changeState('finished', 'Closed', 'all done');
+    reset();
+
+    const thirdChange = stateBuilder('finished', 'Closed', 'all done', secondChange);
+
+    expect(task.states, 'Third Change').to.deep.equal(thirdChange);
+    expect(task.states.previous, 'Second Change').to.deep.equal(secondChange);
+
+    const actualSecondChange = clean(task.states.previous);
+    expect(actualSecondChange.previous, 'First Change').to.deep.equal(firstChange);
+
+    const actualFirstChange = clean(actualSecondChange.previous);
+    expect(actualFirstChange.previous, 'Initial State').to.deep.equal(initialState);
   });
 });

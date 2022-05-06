@@ -1,6 +1,15 @@
 //let expectedDate : Date;
 
 import { IContainer } from "@/container";
+import { none, None } from "@/generalTypes";
+
+export function clean<T>(value: T | None) : T {
+  if(value === none) {
+    throw new Error("not a valid value");
+  }
+
+  return value;
+}
 
 export class TimeHelper {
   private _date: Date;

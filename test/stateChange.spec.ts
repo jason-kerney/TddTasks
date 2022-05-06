@@ -36,7 +36,7 @@ describe('StateChange should', () => {
     expect(actual.activity).to.equal(expectedActivity);
     expect(actual.activityDescriptor).to.equal(activityDescriptor);
     expect(actual.date).to.deep.equal(expectedDate);
-    expect(actual.next).to.equal(none);
+    expect(actual.previous).to.equal(none);
   });
 
   it('allow for a new state with activity and activity descriptor', () => {
@@ -51,66 +51,41 @@ describe('StateChange should', () => {
     expect(actual.activity).to.equal(expectedActivity);
     expect(actual.activityDescriptor).to.equal(activityDescriptor);
     expect(actual.date).to.deep.equal(expectedDate);
-    expect(actual.next).to.equal(none);
+    expect(actual.previous).to.equal(none);
   });
 
   it('allow new state change to be attached to previous', () => {
     const actual1 = builder('first', 'Non-Active', 'fist thing');
 
-    let reset = dateHandler.holdDate();
-    builder('second', 'Non-Active', 'second thing', actual1);
+    let actual2 = builder('second', 'Non-Active', 'second thing', actual1);
 
-    reset();
-    let actual2 = builder('second', 'Non-Active', 'second thing');
 
-    expect(actual1.next).to.deep.equal(actual2);
+    expect(actual2.previous).to.deep.equal(actual1);
   });
 
   it('return previous value', () => {
-    const actual1 = builder('first', 'Non-Active', 'fist thing');
+    const firstState = builder('first', 'Non-Active', 'fist thing');
+    const secondState = builder('second', 'Non-Active', 'second thing', firstState);
 
+    expect(secondState.previous).to.deep.equal(firstState);
+  });
+
+  it('attach previous and return new head', () => {
+    const firstState = builder('first', 'Non-Active', 'fist thing');
+    const secondState = builder('second', 'Non-Active', 'second thing', firstState);
+    const thirdState = builder('third', 'Non-Active', 'third thing', secondState);
+
+    expect(thirdState.previous, 'Third State').to.equal(secondState);
+    expect(secondState.previous, 'Second State').to.deep.equal(firstState);
+    expect(firstState.previous, 'First State').to.equal(none);
+  });
+
+  it('be able to get the first change', () => {
+    const actual1 = builder('first', 'Non-Active', 'fist thing');
     const actual2 = builder('second', 'Non-Active', 'second thing', actual1);
+    const actual3 = builder('third', 'Non-Active', 'third thing', actual2);
 
-    expect(actual1).to.deep.equal(actual2);
-  });
-
-  it('attach to last open space', () => {
-    const actual1 = builder('first', 'Non-Active', 'fist thing');
-
-    let reset = dateHandler.holdDate();
-    builder('second', 'Non-Active', 'second thing', actual1);
-
-    reset();
-    const actual2 = builder('second', 'Non-Active', 'second thing')
-
-    reset = dateHandler.holdDate();
-    builder('third', 'Non-Active', 'third thing', actual1);
-
-    reset();
-    const actual3 = builder('third', 'Non-Active', 'third thing');
-    actual2.next = actual3;
-
-    expect(actual1.next).to.deep.equal(actual2);
-    expect((actual1.next as IStateChange).next).to.deep.equal(actual3);
-  });
-
-  it('be able to get the last change', () => {
-    const actual1 = builder('first', 'Non-Active', 'fist thing');
-
-    let reset = dateHandler.holdDate();
-    builder('second', 'Non-Active', 'second thing', actual1);
-
-    reset();
-    const actual2 = builder('second', 'Non-Active', 'second thing')
-
-    reset = dateHandler.holdDate();
-    builder('third', 'Non-Active', 'third thing', actual1);
-
-    reset();
-    const actual3 = builder('third', 'Non-Active', 'third thing');
-    actual2.next = actual3;
-
-    expect(actual1.getLast()).to.deep.equal(actual3);
+    expect(actual3.getFirst()).to.deep.equal(actual1);
   });
 
   it('be able to get the date of the last change', () => {
@@ -118,8 +93,9 @@ describe('StateChange should', () => {
     builder('second', 'Non-Active', 'second thing', actual1);
     let expectedDate = dateHandler.peekDate();
 
-    builder('third', 'Non-Active', 'third thing', actual1);
+    const actual2 = builder('third', 'Non-Active', 'third thing', actual1);
 
-    expect(actual1.getLastUpdateDate()).to.deep.equal(expectedDate);
+    expect(actual2.getLastUpdateDate()).to.deep.equal(actual2.date);
+    expect(actual2.getFirstUpdateDate()).to.deep.equal(actual1.date);
   });
 });

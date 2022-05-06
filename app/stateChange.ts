@@ -8,19 +8,23 @@ export abstract class IStateChange {
   abstract date: Date;
   abstract activity: Activity;
   abstract activityDescriptor: string | None;
-  abstract next: IStateChange | None;
+  abstract previous: IStateChange | None;
 
-  getLast(): IStateChange {
-    let r = this as IStateChange;
-    while(r.next !== none) {
-      r = r.next;
+  getFirst() : IStateChange {
+    let r = this as IStateChange
+    while(r.previous !== none) {
+      r = r.previous;
     }
 
     return r;
   }
 
+  getFirstUpdateDate(): Date {
+    return this.getFirst().date;
+  }
+
   getLastUpdateDate(): Date {
-    return this.getLast().date;
+    return this.date;
   }
 }
 
@@ -29,7 +33,7 @@ class StateChange extends IStateChange {
   date: Date;
   activity: Activity;
   activityDescriptor: string | None;
-  next: IStateChange | None;
+  previous: IStateChange | "none";
 
   constructor(stateName: string, activity: Activity, activityDescriptor: string | None, date: Date, previous : IStateChange | None = none) {
     super();
@@ -37,11 +41,7 @@ class StateChange extends IStateChange {
     this.date = date;
     this.activity = activity;
     this.activityDescriptor = activityDescriptor;
-    this.next = none;
-
-    if (previous === none) return;
-
-    previous.getLast().next = this;
+    this.previous = previous;
   }
 }
 
@@ -50,12 +50,7 @@ export const stateChangeBuilder =
     const ctor: StateChangeConstructor = (name: string, activity: Activity, activityDescriptor: string | None, previous : IStateChange | None = none) => {
       const date = factory.build<Date>('Now')();
 
-      if(previous === none){
-        return new StateChange(name, activity, activityDescriptor, date);
-      }
-
-      new StateChange(name, activity, activityDescriptor, date, previous);
-      return previous;
+      return new StateChange(name, activity, activityDescriptor, date, previous);
     };
 
     return ctor;
