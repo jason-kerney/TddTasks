@@ -1,15 +1,30 @@
 import { IContainer } from "@/container";
 
-export interface IWalrusBucket {
+export class IWalrusBucket {
+    getTasks() {
+        throw new Error('Method getTasks not implemented');
+    }
+
+    getCompleteTasks() {
+        throw new Error('Method getTasks not implemented');
+    }
+    
+    getActiveTasks() {
+        throw new Error('Method getTasks not implemented');
+    }
+    
+    getNonActiveTasks() {
+        throw new Error('Method getTasks not implemented');
+    }
 }
 
 export type WalrusBucketConstructor = () => IWalrusBucket;
 
-class WalrusBucket implements IWalrusBucket{
-    getTasks() {}
-    getCompleteTasks() {}
-    getActiveTasks() {}
-    getNonActiveTasks() {}
+class WalrusBucket extends IWalrusBucket{
+
+    constructor() {
+        super();
+    }
 }
 
 export function walrusBucketBuilder(factory: IContainer): WalrusBucketConstructor {
