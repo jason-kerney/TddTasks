@@ -28,7 +28,7 @@ class Container extends IContainer {
 
   constructor() {
     super();
-    this.map['Now'] = (_factory) => () => { return new Date(Date.now()) };
+    this.map[Date.name] = (_factory) => () => { return new Date(Date.now()) };
     this.map[IStateChange.name] = stateChangeBuilder;
     this.map[ITask.name] = taskBuilder;
     this.map[IWalrusBucket.name] = walrusBucketBuilder;

@@ -77,32 +77,32 @@ describe('The Container should', () => {
   });
 
   it('contain a builder for getting the date', () => {
-    const expectedResult = container.build<Date>('Now')();
+    const expectedResult = container.build<Date>(Date.name)();
 
     expect(expectedResult).to.be.an.instanceOf(Date);
   });
 
   it('allow registration of Date to return specific date', () => {
-    container.register<Date>('Now', () => () => new Date('3/14/1592') );
-    const expectedResult = container.build<Date>('Now')();
+    container.register<Date>(Date.name, () => () => new Date('3/14/1592') );
+    const expectedResult = container.build<Date>(Date.name)();
 
     expect(expectedResult).to.be.deep.equal(new Date('3/14/1592'));
   });
 
   it('allow de-registration of alternate Date to return current date', () => {
-    container.register<Date>('Now', () => () => new Date('3/14/1592') );
-    container.deregister('Now');
+    container.register<Date>(Date.name, () => () => new Date('3/14/1592') );
+    container.deregister(Date.name);
 
-    const expectedResult = container.build<Date>('Now')();
+    const expectedResult = container.build<Date>(Date.name)();
 
     expect(expectedResult).to.not.deep.equal(new Date('3/14/1592'));
     expect(expectedResult).to.be.instanceOf(Date);
   });
 
   it('allow de-registration of Date when a new date was not registered', () => {
-    container.deregister('Now');
+    container.deregister(Date.name);
 
-    const expectedResult = container.build<Date>('Now')();
+    const expectedResult = container.build<Date>(Date.name)();
 
     expect(expectedResult).to.not.deep.equal(new Date('3/14/1592'));
     expect(expectedResult).to.be.instanceOf(Date);
