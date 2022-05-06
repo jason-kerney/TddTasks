@@ -90,7 +90,7 @@ describe('StateChange should', () => {
 
   it('be able to get the date of the last change', () => {
     const actual1 = builder('first', 'Non-Active', 'fist thing');
-    const actual2 = builder('second', 'Non-Active', 'third thing', actual1);
+    const actual2 = builder('second', 'Non-Active', 'second thing', actual1);
     const actual3 = builder('third', 'Non-Active', 'third thing', actual2);
 
     expect(actual1.getFirstUpdateDate()).to.deep.equal(actual1.date);
