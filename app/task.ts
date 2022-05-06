@@ -9,7 +9,7 @@ export abstract class ITask {
   abstract changeState(stateName: string, activity: Activity, activityDescriptor: string) : void
 }
 
-export type TaskConstructor = (name: string, size?: Size | Unsized) => ITask;
+export type TaskConstructor = (name: string, size?: Size) => ITask;
 
 class Task extends ITask {
   name: string;

@@ -7,22 +7,30 @@ describe('Walrus Bucket should', () => {
     let container: IContainer;
     let walrusBucketConstructor: WalrusBucketConstructor;
     let taskConstructor: TaskConstructor;
+    let sut: IWalrusBucket;
 
     beforeEach(() => {
         container = getContainer();
         taskConstructor = container.build(ITask);
         walrusBucketConstructor = container.build(IWalrusBucket);
+        sut = walrusBucketConstructor();
     });
 
     it('be registered with the container', () => {
-        let r = walrusBucketConstructor();
-
-        expect(r).to.be.instanceOf(IWalrusBucket);
+        expect(sut).to.be.instanceOf(IWalrusBucket);
     });
 
     it('have no tasks when created', () =>{
-      let r = walrusBucketConstructor();
+      expect(sut.getAllTasks()).to.have.lengthOf(0);
+    });
 
-      expect(r.getAllTasks()).to.have.lengthOf(0);
+    it('allow for an existing task to be added', () => {
+      let task = taskConstructor('A task');
+
+      sut.add(task);
+      let r = sut.getAllTasks();
+
+      expect(r).to.have.lengthOf(1);
+      expect(r[0]).to.deep.equal(task);
     });
 });
