@@ -4,11 +4,11 @@ import { Factory, IContainer } from "./container"
 export type StateChangeConstructor = (stateName: string, activity: Activity, activityDescriptor: string | None, previous? : IStateChange) => IStateChange
 
 export abstract class IStateChange {
-  abstract stateName: string;
-  abstract date: Date;
-  abstract activity: Activity;
-  abstract activityDescriptor: string | None;
-  abstract previous: IStateChange | None;
+  abstract readonly stateName: string;
+  abstract readonly date: Date;
+  abstract readonly activity: Activity;
+  abstract readonly activityDescriptor: string | None;
+  abstract readonly previous: IStateChange | None;
 
   getFirst() : IStateChange {
     let r = this as IStateChange
@@ -29,11 +29,11 @@ export abstract class IStateChange {
 }
 
 class StateChange extends IStateChange {
-  stateName: string;
-  date: Date;
-  activity: Activity;
-  activityDescriptor: string | None;
-  previous: IStateChange | "none";
+  readonly stateName: string;
+  readonly date: Date;
+  readonly activity: Activity;
+  readonly activityDescriptor: string | None;
+  readonly previous: IStateChange | "none";
 
   constructor(stateName: string, activity: Activity, activityDescriptor: string | None, date: Date, previous : IStateChange | None = none) {
     super();
