@@ -1,20 +1,21 @@
 import { IContainer } from "@/container";
+import { isNotImplemented } from "@/interfaceHelper";
 
 export class IWalrusBucket {
     getTasks() {
-        throw new Error('Method getTasks not implemented');
+        isNotImplemented(this.getTasks.name);
     }
 
     getCompleteTasks() {
-        throw new Error('Method getTasks not implemented');
+        isNotImplemented(this.getCompleteTasks.name);
     }
     
     getActiveTasks() {
-        throw new Error('Method getTasks not implemented');
+        isNotImplemented(this.getActiveTasks.name);
     }
     
     getNonActiveTasks() {
-        throw new Error('Method getTasks not implemented');
+        isNotImplemented(this.getNonActiveTasks.name);
     }
 }
 
