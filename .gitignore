@@ -42,3 +42,6 @@ yarn.lock
 
 # test artifacts
 .nyc_output/**/*
+
+#compiled source
+*.js
