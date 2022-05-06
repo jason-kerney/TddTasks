@@ -9,6 +9,7 @@ export type Factory<T> = (factory: IContainer) => Builder<T>
 
 export abstract class IContainer {
   abstract register<T>(typeName: string, factory: Factory<T>) : any;
+  abstract registerA<T>(type: abstract new(...parameters: any) => T, factory: Factory<T>) : any;
   abstract build<T>(type: abstract new(...parameters: any) => T) : Builder<T>;
   abstract deregister(typeName: string) : void;
 }
@@ -35,6 +36,10 @@ class Container extends IContainer {
 
   register<T>(typeName: string, factory: Factory<T>) {
     this.alt[typeName] = factory;
+  }
+
+  registerA<T>(type: abstract new(...parameters: any) => T, factory: Factory<T>) {
+    this.alt[type.name] = factory;
   }
 
   build<T>(type: abstract new(...parameters: any) => T) : Builder<T> {

@@ -36,7 +36,7 @@ describe('The Container should', () => {
     let item = new ItemType('test thing');
     let factory = () => () => item;
 
-    container.register<ItemType>(ItemType.name, factory);
+    container.registerA<ItemType>(ItemType, factory);
     const expectedResult = container.build<ItemType>(ItemType)();
 
     expect(expectedResult).equal(item);
@@ -44,10 +44,10 @@ describe('The Container should', () => {
 
   it('give back the first function to construct an item when two are registered', () =>{
     let item1 = new ItemType('test thing');
-    container.register<ItemType>(ItemType.name, () => () => item1);
+    container.registerA<ItemType>(ItemType, () => () => item1);
 
     let item2 = new ItemType2('test description');
-    container.register<ItemType2>(ItemType2.name, () => () => item2);
+    container.registerA<ItemType2>(ItemType2, () => () => item2);
 
     const expectedResult = container.build<ItemType>(ItemType)();
 
@@ -56,10 +56,10 @@ describe('The Container should', () => {
 
   it('give back the second function to construct an item when two are registered', () =>{
     let item1 = new ItemType('test thing');
-    container.register<ItemType>(ItemType.name, () => () => item1);
+    container.registerA<ItemType>(ItemType, () => () => item1);
 
     let item2 =  new ItemType2('test description');
-    container.register<ItemType2>(ItemType2.name, () => () => item2);
+    container.registerA<ItemType2>(ItemType2, () => () => item2);
 
     const expectedResult = container.build<ItemType2>(ItemType2)();
 
@@ -71,7 +71,7 @@ describe('The Container should', () => {
   });
 
   it('give back a function that returns none when calling something that is not registered registered', () =>{
-    container.register(YesThing.name, () => () => new YesThing(true));
+    container.registerA(YesThing, () => () => new YesThing(true));
 
     expect(() => container.build<ItemType>(ItemType)).throws('No "ItemType" provider registered');
   });
@@ -83,14 +83,14 @@ describe('The Container should', () => {
   });
 
   it('allow registration of Date to return specific date', () => {
-    container.register<Date>(Date.name, () => () => new Date('3/14/1592') );
+    container.registerA<Date>(Date, () => () => new Date('3/14/1592') );
     const expectedResult = container.build<Date>(Date)();
 
     expect(expectedResult).to.be.deep.equal(new Date('3/14/1592'));
   });
 
   it('allow de-registration of alternate Date to return current date', () => {
-    container.register<Date>(Date.name, () => () => new Date('3/14/1592') );
+    container.registerA<Date>(Date, () => () => new Date('3/14/1592') );
     container.deregister(Date.name);
 
     const expectedResult = container.build<Date>(Date)();
@@ -110,7 +110,7 @@ describe('The Container should', () => {
 
   it('throw on building of new type when a new new type was deregistered', () => {
     let item = new ItemType('test thing');
-    container.register<ItemType>(ItemType.name, () => () => item);
+    container.registerA<ItemType>(ItemType, () => () => item);
     container.deregister(ItemType.name);
 
     expect(() => container.build<ItemType>(ItemType)).throws('No "ItemType" provider registered')
@@ -122,7 +122,7 @@ describe('The Container should', () => {
 
   it('passes itself to the factory method', () => {
     let called = false;
-    container.register<YesThing>(YesThing.name, (factory) => {
+    container.registerA<YesThing>(YesThing, (factory) => {
       expect(factory).to.be.equal(container);
       called = true;
 
