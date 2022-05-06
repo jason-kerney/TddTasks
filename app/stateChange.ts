@@ -9,8 +9,19 @@ export abstract class IStateChange {
   abstract activity: Activity;
   abstract activityDescriptor: string | None;
   abstract next: IStateChange | None;
-  abstract getLast() : IStateChange;
-  abstract getLastUpdateDate() : Date;
+
+  getLast(): IStateChange {
+    let r = this as IStateChange;
+    while(r.next !== none) {
+      r = r.next;
+    }
+
+    return r;
+  }
+
+  getLastUpdateDate(): Date {
+    return this.getLast().date;
+  }
 }
 
 class StateChange extends IStateChange {
@@ -31,19 +42,6 @@ class StateChange extends IStateChange {
     if (previous === none) return;
 
     previous.getLast().next = this;
-  }
-
-  getLast(): IStateChange {
-    let r = this as IStateChange;
-    while(r.next !== none) {
-      r = r.next;
-    }
-
-    return r;
-  }
-
-  getLastUpdateDate(): Date {
-    return this.getLast().date;
   }
 }
 
