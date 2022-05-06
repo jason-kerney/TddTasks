@@ -50,8 +50,8 @@ describe('Walrus Bucket should', () => {
     let r = sut.getAllTasks();
 
     expect(r).to.have.lengthOf(1);
-    expect(r[0].name).to.deep.equal(task.name);
-    expect(r[0].size).to.deep.equal(task.size);
+    expect(r[0].name).to.equal(task.name);
+    expect(r[0].size).to.equal(task.size);
     expect(r[0].states).to.deep.equal(task.states);
   });
 
@@ -65,8 +65,8 @@ describe('Walrus Bucket should', () => {
     let r = sut.getAllTasks();
 
     expect(r).to.have.lengthOf(1);
-    expect(r[0].name).to.deep.equal(task.name);
-    expect(r[0].size).to.deep.equal(task.size);
+    expect(r[0].name).to.equal(task.name);
+    expect(r[0].size).to.equal(task.size);
     expect(r[0].states).to.deep.equal(task.states);
   });
 });
