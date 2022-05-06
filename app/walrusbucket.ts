@@ -31,7 +31,7 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   add(task: ITask): void {
-    this.tasks = [task];
+    this.tasks.push(task);
   }
 
   addNew(name: string, size?: Size): void {

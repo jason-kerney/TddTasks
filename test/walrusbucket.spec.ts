@@ -69,4 +69,20 @@ describe('Walrus Bucket should', () => {
     expect(r[0].size).to.equal(task.size);
     expect(r[0].states).to.deep.equal(task.states);
   });
+
+  it('allow for the adding of two existing tasks', () => {
+    const task1 = taskConstructor('first task');
+    const task2 = taskConstructor('second task');
+
+    sut.add(task1);
+    sut.add(task2);
+
+    const r = sut.getAllTasks();
+
+    expect(r).to.have.lengthOf(2);
+
+    expect(r[0].name).to.equal(task1.name);
+    expect(r[1].name).to.equal(task2.name);
+    expect(task1.name).to.not.equal(task2.name);
+  });
 });
