@@ -77,7 +77,7 @@ describe('The Container should', () => {
   });
 
   it('contain a builder for getting the date', () => {
-    const expectedResult = container.build<Date>(Date.name)();
+    const expectedResult = container.buildA<Date>(Date)();
 
     expect(expectedResult).to.be.an.instanceOf(Date);
   });
@@ -93,7 +93,7 @@ describe('The Container should', () => {
     container.register<Date>(Date.name, () => () => new Date('3/14/1592') );
     container.deregister(Date.name);
 
-    const expectedResult = container.build<Date>(Date.name)();
+    const expectedResult = container.buildA<Date>(Date)();
 
     expect(expectedResult).to.not.deep.equal(new Date('3/14/1592'));
     expect(expectedResult).to.be.instanceOf(Date);
@@ -102,19 +102,18 @@ describe('The Container should', () => {
   it('allow de-registration of Date when a new date was not registered', () => {
     container.deregister(Date.name);
 
-    const expectedResult = container.build<Date>(Date.name)();
+    const expectedResult = container.buildA<Date>(Date)();
 
     expect(expectedResult).to.not.deep.equal(new Date('3/14/1592'));
     expect(expectedResult).to.be.instanceOf(Date);
   });
 
   it('throw on building of new type when a new new type was deregistered', () => {
-    let item = { Name: 'test thing' };
-    type ItemType = typeof item;
-    container.register<ItemType>('TestThing', () => () => item);
-    container.deregister('TestThing');
+    let item = new ItemType('test thing');
+    container.register<ItemType>(ItemType.name, () => () => item);
+    container.deregister(ItemType.name);
 
-    expect(() => container.build<ItemType>('TestThing')).throws('No "TestThing" provider registered')
+    expect(() => container.buildA<ItemType>(ItemType)).throws('No "ItemType" provider registered')
   });
 
   it('not throw on de-registration Now when Now was not registered', () => {
@@ -123,14 +122,14 @@ describe('The Container should', () => {
 
   it('passes itself to the factory method', () => {
     let called = false;
-    container.register('thing', (factory) => {
+    container.register<YesThing>(YesThing.name, (factory) => {
       expect(factory).to.be.equal(container);
       called = true;
 
-      return () => 'yes'
+      return () => new YesThing(false)
     });
 
-    container.build<any>('thing');
+    container.buildA<YesThing>(YesThing);
 
     expect(called).to.be.true;
   });
