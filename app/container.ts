@@ -9,7 +9,7 @@ export type Factory<T> = (factory: IContainer) => Builder<T>
 export interface IContainer {
   register<T>(typeName: string, factory: Factory<T>) : any;
   build<T>(typeName: string) : Builder<T>;
-  deregister(typeName: string);
+  deregister(typeName: string) : void;
 }
 
 function handle<T>(container: IContainer, value: Factory<T> | undefined) : Builder<T> | None {
