@@ -9,6 +9,14 @@ class ItemType {
   }
 }
 
+class ItemType2 {
+  description: string;
+
+  constructor(description: string) {
+    this.description = description;
+  }
+}
+
 describe('The Container should', () => {
   var container : IContainer;
 
@@ -27,15 +35,13 @@ describe('The Container should', () => {
   });
 
   it('give back the first function to construct an item when two are registered', () =>{
-    let item1 = { Name: 'test thing' };
-    type ItemType1 = typeof item1;
-    container.register<ItemType1>('TestThing1', () => () => item1);
+    let item1 = new ItemType('test thing');
+    container.register<ItemType>(ItemType.name, () => () => item1);
 
-    let item2 = { Description: 'test description' };
-    type ItemType2 = typeof item2;
-    container.register<ItemType2>('TestThing2', () => () => item2);
+    let item2 = new ItemType2('test description');
+    container.register<ItemType2>(ItemType2.name, () => () => item2);
 
-    const expectedResult = container.build<ItemType1>('TestThing1')();
+    const expectedResult = container.buildA<ItemType>(ItemType)();
 
     expect(expectedResult).to.deep.equal(item1);
   });
