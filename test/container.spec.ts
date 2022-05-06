@@ -84,7 +84,7 @@ describe('The Container should', () => {
 
   it('allow registration of Date to return specific date', () => {
     container.register<Date>(Date.name, () => () => new Date('3/14/1592') );
-    const expectedResult = container.build<Date>(Date.name)();
+    const expectedResult = container.buildA<Date>(Date)();
 
     expect(expectedResult).to.be.deep.equal(new Date('3/14/1592'));
   });
