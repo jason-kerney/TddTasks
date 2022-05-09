@@ -35,6 +35,7 @@ class WalrusBucket extends IWalrusBucket {
 
   add(task: ITask): void {
     this.tasks.push(task);
+    task.changeState('Queued', 'Non-Active', "team A's queue");
   }
 
   addNew(name: string, size?: Size): void {

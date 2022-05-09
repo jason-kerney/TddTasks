@@ -4,6 +4,7 @@ import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
 import { ITask, TaskConstructor } from "@/task";
 import { TimeHelper } from "./helpers";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
+import { none } from "@/generalTypes";
 
 describe('Walrus Bucket should', () => {
   let container: IContainer;
@@ -49,7 +50,24 @@ describe('Walrus Bucket should', () => {
     let r = sut.getAllTasks();
 
     expect(r).to.have.lengthOf(1);
-    expect(r[0]).to.deep.equal(task);
+  });
+
+  it('add state "queued" to existing task when added', () => {
+    let task = taskConstructor('A task');
+
+    sut.add(task);
+    let r = sut.getAllTasks();
+
+    const currentState = r[0].states;
+    expect(currentState.count(), 'Count').to.equal(2);
+    expect(currentState.stateName).to.equal('Queued');
+    expect(currentState.activityDescriptor).to.equal("team A's queue");
+    expect(currentState.activity).to.equal('Non-Active');
+
+    const previousState = currentState.previous as IStateChange;
+
+    expect(previousState).to.not.equal(none);
+    expect(previousState.stateName).to.equal('Created');
   });
 
   it('allow for a new task to be added', () => {
