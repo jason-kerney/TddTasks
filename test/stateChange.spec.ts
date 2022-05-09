@@ -53,6 +53,7 @@ describe('StateChange should', () => {
     expect(actual.activityDescriptor).to.equal(activityDescriptor);
     expect(actual.date).to.deep.equal(expectedDate);
     expect(actual.previous).to.equal(none);
+    expect(actual.count()).to.equal(1);
   });
 
   it('allow new state change to be attached to previous', () => {
@@ -62,6 +63,8 @@ describe('StateChange should', () => {
 
 
     expect(actual2.previous).to.deep.equal(actual1);
+    expect(actual1.count()).to.equal(1);
+    expect(actual2.count()).to.equal(2);
   });
 
   it('return previous value', () => {

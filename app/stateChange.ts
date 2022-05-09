@@ -24,7 +24,14 @@ export abstract class IStateChange {
   }
 
   count(): number {
-    return 1;
+    let r = 1;
+    let p = this.previous;
+    while(p !== none) {
+      r++;
+      p = p.previous;
+    }
+
+    return r;
   }
 }
 
