@@ -27,23 +27,28 @@
   "aliases": [
     {
       "name": "test",
-      "command": "gittey clear && npm test && npm run precompile && gittey commit && git push && gittey date"
+      "command": "gittey clear && npm test && npm run precompile && gittey commit && git push && gittey date",
+      "description": "runs tests, on success commits and pushes."
     },
     {
       "name": "clear",
-      "command": "cls && gittey date"
+      "command": "cls && gittey date",
+      "description": "clears screen and displays date/time when it was done"
     },
     {
       "name": "date",
-      "command": "powershell date"
+      "command": "powershell date",
+      "description": "uses powershell to display date and time"
     },
     {
       "name": "build",
-      "command": "gittey clear && npm run compile"
+      "command": "gittey clear && npm run compile",
+      "description": "runs the typescript compiler"
     },
     {
       "name": "compile",
-      "command": "gittey build"
+      "command": "gittey build",
+      "description": "runs the typescript compiler"
     }
   ],
   "collaborators": []
