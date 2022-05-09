@@ -2,7 +2,7 @@ import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
 import { ITask, TaskConstructor } from "@/task";
-import { addNRandomTasks, getRandomBetween, TimeHelper } from "./helpers";
+import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, TimeHelper } from "./helpers";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { Activity, none } from "@/generalTypes";
 
@@ -16,14 +16,13 @@ describe('Walrus Bucket should', () => {
   let sut: IWalrusBucket;
   let dateHelper: TimeHelper;
 
-  describe('getAllTasks optionally', () => {
+  describe('getAllTasks optionally filtered ', () => {
     beforeEach(() => {
       numberOfActive = getRandomBetween(0, 100);
       numberOfInactive= getRandomBetween(0, 100);
       container = getContainer();
 
-      dateHelper = new TimeHelper();
-      dateHelper.registerWith(container);
+      dateHelper = setupRandomEnvironment(container, new DateRange(new Date("1-JAN-2020"), new Date("31-JAN-2020")));
 
       taskConstructor = container.build(ITask);
       stateConstructor = container.build(IStateChange)
@@ -34,13 +33,13 @@ describe('Walrus Bucket should', () => {
       addNRandomTasks(sut, numberOfInactive);
     });
 
-    it('filter by Activity', () => {
+    it('by Activity', () => {
       let r = sut.getAllTasks({ Activity: 'Active' });
 
       expect(r).to.have.lengthOf(numberOfActive);
     });
 
-    it('filter by Activity and return real items', () => {
+    it('by Activity and return real items', () => {
       let r = sut.getAllTasks({ Activity: 'Active' });
 
       for (let index = 0; index < numberOfActive; index++) {
@@ -48,7 +47,7 @@ describe('Walrus Bucket should', () => {
       }
     });
 
-    it('filter by Activity and return items of ITask', () => {
+    it('by Activity and return items of ITask', () => {
       let r = sut.getAllTasks({ Activity: 'Active' });
 
       for (let index = 0; index < numberOfActive; index++) {
@@ -56,13 +55,13 @@ describe('Walrus Bucket should', () => {
       }
     });
 
-    it('filter by Non-Activity', () => {
+    it('by Non-Activity', () => {
       let r = sut.getAllTasks({ Activity: 'Non-Active' });
 
       expect(r).to.have.lengthOf(numberOfInactive);
     });
 
-    it('filter by Non-Activity and return real items', () => {
+    it('by Non-Activity and return real items', () => {
       let r = sut.getAllTasks({ Activity: 'Non-Active' });
 
       for (let index = 0; index < numberOfInactive; index++) {
@@ -70,7 +69,7 @@ describe('Walrus Bucket should', () => {
       }
     });
 
-    it('filter by Non-Activity and return items of ITask', () => {
+    it('by Non-Activity and return items of ITask', () => {
       let r = sut.getAllTasks({ Activity: 'Non-Active' });
 
       for (let index = 0; index < numberOfActive; index++) {
