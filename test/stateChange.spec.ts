@@ -43,7 +43,7 @@ describe('StateChange should', () => {
   it('allow for a new state with activity and activity descriptor', () => {
     const name = 'My new state';
     const expectedActivity = 'Active';
-    const activityDescriptor = 'blocked';
+    const activityDescriptor = none;
     const expectedDate = dateHandler.peekDate();
 
     const actual = builder(name, expectedActivity, activityDescriptor);

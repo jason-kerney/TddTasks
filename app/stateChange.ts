@@ -41,7 +41,7 @@ class StateChange extends IStateChange {
   readonly activityDescriptor: string | None;
   readonly previous: IStateChange | "none";
 
-  constructor(stateName: string, activity: Activity, activityDescriptor: string | None, date: Date, previous : IStateChange | None = none) {
+  constructor(stateName: string, activity: Activity, activityDescriptor: string | None, date: Date, previous : IStateChange | None) {
     super();
     this.stateName = stateName;
     this.date = date;
