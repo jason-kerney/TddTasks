@@ -40,9 +40,11 @@ class WalrusBucket extends IWalrusBucket {
 
     for (let index = 0; index < this.tasks.length; index++) {
       const task = this.tasks[index];
-      if (task.states.activity === filter.Activity) {
-        results.push(task);
+      if (task.states.activity !== filter.Activity) {
+        continue;
       }
+      
+      results.push(task);
     }
 
   }
