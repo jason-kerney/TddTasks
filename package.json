@@ -23,5 +23,8 @@
     "typescript": "^4.4.4"
   },
   "author": "jason-kerney",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^8.3.2"
+  }
 }

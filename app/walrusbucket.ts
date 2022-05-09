@@ -1,11 +1,15 @@
 import { IContainer } from "@/container";
 import { strictEqual } from "assert";
-import { Size, Unsized } from "./generalTypes";
+import { Activity, Size, Unsized } from "./generalTypes";
 import { ITask, TaskConstructor } from "./task";
+
+export interface ITaskFilter {
+  Activity?: Activity
+}
 
 export abstract class IWalrusBucket {
   abstract name: string;
-  abstract getAllTasks(): ITask[];
+  abstract getAllTasks(filter?: ITaskFilter): ITask[];
   abstract add(task: ITask): void;
   abstract addNew(name: string, size?: Size): void;
 
@@ -29,7 +33,10 @@ class WalrusBucket extends IWalrusBucket {
     this.name = name;
   }
 
-  getAllTasks(): ITask[] {
+  getAllTasks(filter?: ITaskFilter): ITask[] {
+    if(!Boolean(this.tasks)) {
+      return new ITask[13];
+    }
     return this.tasks;
   }
 
