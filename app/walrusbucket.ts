@@ -39,14 +39,15 @@ class WalrusBucket extends IWalrusBucket {
     }
 
     let cnt = 0;
+    let r : any[] = [];
 
     for (let index = 0; index < this.tasks.length; index++) {
       if (this.tasks[index].states.activity === 'Active') {
-        cnt++;
+        r.push({});
       }
     }
 
-    return new Array<ITask>(cnt);
+    return r as ITask[];
   }
 
   add(task: ITask): ITask {
@@ -56,7 +57,7 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   addNew(name: string, size?: Size): ITask {
-    return this.add(this.taskBuilder(name, size))
+    return this.add(this.taskBuilder(name, size));
   }
 }
 
