@@ -45,5 +45,13 @@ describe('Walrus Bucket should', () => {
         expect(r[index], `r[${index}]`).to.be.not.undefined;
       }
     });
+
+    it('filter by Activity and return itesm of ITask', () => {
+      let r = sut.getAllTasks({ Activity: 'Active' });
+
+      for (let index = 0; index < numberOfActive; index++) {
+        expect(r[index], `r[${index}]`).to.be.instanceOf(ITask);
+      }
+    });
   });
 });

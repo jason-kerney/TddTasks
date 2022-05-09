@@ -39,15 +39,16 @@ class WalrusBucket extends IWalrusBucket {
     }
 
     let cnt = 0;
-    let r : any[] = [];
+    let r : ITask[] = [];
 
     for (let index = 0; index < this.tasks.length; index++) {
-      if (this.tasks[index].states.activity === 'Active') {
-        r.push({});
+      const task = this.tasks[index];
+      if (task.states.activity === 'Active') {
+        r.push(task);
       }
     }
 
-    return r as ITask[];
+    return r;
   }
 
   add(task: ITask): ITask {
