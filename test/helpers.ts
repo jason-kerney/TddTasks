@@ -146,10 +146,11 @@ export function fakeSize(): Size | undefined {
   return 'Tiny';
 }
 
-export function setupRandomEnvironment(container: IContainer, range: DateRange) {
+export function setupRandomEnvironment(container: IContainer, range: DateRange): TimeHelper {
   let dateHelper = new TimeHelper(range.getRandom());
 
   dateHelper.registerWith(container);
+  return dateHelper;
 }
 
 export function addRandomTasks(bucket: IWalrusBucket, activity?: Activity) {
