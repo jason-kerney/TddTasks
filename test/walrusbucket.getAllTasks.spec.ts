@@ -31,7 +31,9 @@ describe('Walrus Bucket should', () => {
     });
 
     it('filter by Activity', () => {
-      sut.getAllTasks({ Activity: 'Active' });
+      let r = sut.getAllTasks({ Activity: 'Active' });
+
+      expect(r).to.have.lengthOf(13);
     });
   });
 });

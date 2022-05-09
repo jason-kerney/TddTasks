@@ -24,7 +24,7 @@ export type WalrusBucketConstructor = (name: string) => IWalrusBucket;
 
 class WalrusBucket extends IWalrusBucket {
   private tasks: ITask[] = [];
-  private taskBuilder : TaskConstructor;
+  private taskBuilder: TaskConstructor;
   public name: string;
 
   constructor(name: string, taskBuilder: TaskConstructor) {
@@ -34,10 +34,11 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   getAllTasks(filter?: ITaskFilter): ITask[] {
-    if(!Boolean(this.tasks)) {
-      return new ITask[13];
+    if (filter === undefined) {
+      return this.tasks;
     }
-    return this.tasks;
+
+    return new Array<ITask>(13);
   }
 
   add(task: ITask): void {
