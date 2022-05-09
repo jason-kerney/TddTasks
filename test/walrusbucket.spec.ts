@@ -3,11 +3,13 @@ import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
 import { ITask, TaskConstructor } from "@/task";
 import { TimeHelper } from "./helpers";
+import { IStateChange, StateChangeConstructor } from "@/stateChange";
 
 describe('Walrus Bucket should', () => {
   let container: IContainer;
   let walrusBucketConstructor: WalrusBucketConstructor;
   let taskConstructor: TaskConstructor;
+  let stateConstructor: StateChangeConstructor;
   let sut: IWalrusBucket;
   let dateHelper: TimeHelper;
 
@@ -18,12 +20,17 @@ describe('Walrus Bucket should', () => {
     dateHelper.registerWith(container);
 
     taskConstructor = container.build(ITask);
+    stateConstructor = container.build(IStateChange)
     walrusBucketConstructor = container.build(IWalrusBucket);
-    sut = walrusBucketConstructor();
+    sut = walrusBucketConstructor("team A's queue");
   });
 
   it('be registered with the container', () => {
     expect(sut).to.be.instanceOf(IWalrusBucket);
+  });
+
+  it('have the name set', () => {
+    expect(sut.name).to.equal("team A's queue");
   });
 
   it('have no tasks when created', () => {
@@ -52,7 +59,6 @@ describe('Walrus Bucket should', () => {
     expect(r).to.have.lengthOf(1);
     expect(r[0].name).to.equal(task.name);
     expect(r[0].size).to.equal(task.size);
-    expect(r[0].states).to.deep.equal(task.states);
   });
 
   it('allow for a new task to be added without size', () => {
@@ -67,7 +73,6 @@ describe('Walrus Bucket should', () => {
     expect(r).to.have.lengthOf(1);
     expect(r[0].name).to.equal(task.name);
     expect(r[0].size).to.equal(task.size);
-    expect(r[0].states).to.deep.equal(task.states);
   });
 
   it('allow for the adding of two existing tasks', () => {

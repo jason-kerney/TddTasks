@@ -4,6 +4,7 @@ import { Size, Unsized } from "./generalTypes";
 import { ITask, TaskConstructor } from "./task";
 
 export abstract class IWalrusBucket {
+  abstract name: string;
   abstract getAllTasks(): ITask[];
   abstract add(task: ITask): void;
   abstract addNew(name: string, size?: Size): void;
@@ -15,15 +16,17 @@ export abstract class IWalrusBucket {
   // abstract getNonActiveTasks();
 }
 
-export type WalrusBucketConstructor = () => IWalrusBucket;
+export type WalrusBucketConstructor = (name: string) => IWalrusBucket;
 
 class WalrusBucket extends IWalrusBucket {
   private tasks: ITask[] = [];
   private taskBuilder : TaskConstructor;
+  public name: string;
 
-  constructor(taskBuilder: TaskConstructor) {
+  constructor(name: string, taskBuilder: TaskConstructor) {
     super();
     this.taskBuilder = taskBuilder;
+    this.name = name;
   }
 
   getAllTasks(): ITask[] {
@@ -40,7 +43,7 @@ class WalrusBucket extends IWalrusBucket {
 }
 
 export function walrusBucketBuilder(factory: IContainer): WalrusBucketConstructor {
-  return function (): IWalrusBucket {
-    return new WalrusBucket(factory.build(ITask));
+  return function (name: string): IWalrusBucket {
+    return new WalrusBucket(name, factory.build(ITask));
   };
 }
