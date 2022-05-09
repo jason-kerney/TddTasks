@@ -49,6 +49,11 @@
       "name": "compile",
       "command": "gittey build",
       "description": "runs the typescript compiler"
+    },
+    {
+      "name": "start",
+      "command": "gittey clear && git pull && code .",
+      "description": "runs the typescript compiler"
     }
   ],
   "collaborators": []
