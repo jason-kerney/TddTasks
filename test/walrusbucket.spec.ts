@@ -70,6 +70,25 @@ describe('Walrus Bucket should', () => {
     expect(previousState.stateName).to.equal('Created');
   });
 
+  it('add state "queued" to existing task when added and correctly get bucket name', () => {
+    let task = taskConstructor('A task');
+
+    let sut = walrusBucketConstructor("Blue's Clues")
+    sut.add(task);
+    let r = sut.getAllTasks();
+
+    const currentState = r[0].states;
+    expect(currentState.count(), 'Count').to.equal(2);
+    expect(currentState.stateName).to.equal('Queued');
+    expect(currentState.activityDescriptor).to.equal("Blue's Clues");
+    expect(currentState.activity).to.equal('Non-Active');
+
+    const previousState = currentState.previous as IStateChange;
+
+    expect(previousState).to.not.equal(none);
+    expect(previousState.stateName).to.equal('Created');
+  });
+
   it('allow for a new task to be added', () => {
     dateHelper.resetAfter(() =>
       sut.addNew('A new task', 'Small')
