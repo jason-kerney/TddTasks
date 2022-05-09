@@ -33,20 +33,29 @@ class WalrusBucket extends IWalrusBucket {
     this.name = name;
   }
 
+  private filterActivity(filter: ITaskFilter, results: ITask[]) {
+    if (filter.Activity === undefined) {
+      return;
+    }
+
+    for (let index = 0; index < this.tasks.length; index++) {
+      const task = this.tasks[index];
+      if (task.states.activity === filter.Activity) {
+        results.push(task);
+      }
+    }
+
+  }
+
   getAllTasks(filter?: ITaskFilter): ITask[] {
     if (filter === undefined) {
       return this.tasks;
     }
 
     let cnt = 0;
-    let r : ITask[] = [];
+    let r: ITask[] = [];
 
-    for (let index = 0; index < this.tasks.length; index++) {
-      const task = this.tasks[index];
-      if (filter.Activity !== undefined && task.states.activity === filter.Activity) {
-        r.push(task);
-      }
-    }
+    this.filterActivity(filter, r);
 
     return r;
   }
