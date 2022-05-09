@@ -33,6 +33,11 @@ describe('Walrus Bucket should', () => {
     expect(sut.name).to.equal("team A's queue");
   });
 
+  it('have the name set even if it is different', () => {
+    let bucket = walrusBucketConstructor("Blue's clues")
+    expect(bucket.name).to.equal("Blue's clues");
+  });
+
   it('have no tasks when created', () => {
     expect(sut.getAllTasks()).to.have.lengthOf(0);
   });
