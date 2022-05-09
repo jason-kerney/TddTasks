@@ -103,6 +103,20 @@ describe('Walrus Bucket should', () => {
     expect(r[0].size).to.equal(task.size);
   });
 
+  it('create new task with state of queued', () => {
+    sut.addNew('A new task', 'Small');
+
+    let r = sut.getAllTasks();
+
+    const currentState = r[0].states;
+    expect(currentState.count(), 'Count').to.equal(2);
+    expect(currentState.stateName).to.equal('Queued');
+    expect(currentState.activityDescriptor).to.equal("team A's queue");
+    expect(currentState.activity).to.equal('Non-Active');
+
+    const previousState = currentState.previous as IStateChange;
+  });
+
   it('allow for a new task to be added without size', () => {
     dateHelper.resetAfter(() =>
       sut.addNew('A new task')
