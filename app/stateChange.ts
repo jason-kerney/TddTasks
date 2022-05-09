@@ -26,9 +26,8 @@ export abstract class IStateChange {
   count(): number {
     let r = 1;
     let p = this.previous;
-    while(p !== none) {
-      r++;
-      p = p.previous;
+    if(p !== none) {
+      r += p.count();
     }
 
     return r;
