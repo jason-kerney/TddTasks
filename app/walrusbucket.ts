@@ -10,8 +10,8 @@ export interface ITaskFilter {
 export abstract class IWalrusBucket {
   abstract name: string;
   abstract getAllTasks(filter?: ITaskFilter): ITask[];
-  abstract add(task: ITask): void;
-  abstract addNew(name: string, size?: Size): void;
+  abstract add(task: ITask): ITask;
+  abstract addNew(name: string, size?: Size): ITask;
 
   // abstract getCompleteTasks();
 
@@ -38,16 +38,25 @@ class WalrusBucket extends IWalrusBucket {
       return this.tasks;
     }
 
-    return new Array<ITask>(13);
+    let cnt = 0;
+
+    for (let index = 0; index < this.tasks.length; index++) {
+      if (this.tasks[index].states.activity === 'Active') {
+        cnt++;
+      }
+    }
+
+    return new Array<ITask>(cnt);
   }
 
-  add(task: ITask): void {
+  add(task: ITask): ITask {
     this.tasks.push(task);
     task.changeState('Queued', 'Non-Active', this.name);
+    return task;
   }
 
-  addNew(name: string, size?: Size): void {
-    this.add(this.taskBuilder(name, size))
+  addNew(name: string, size?: Size): ITask {
+    return this.add(this.taskBuilder(name, size))
   }
 }
 

@@ -153,15 +153,22 @@ export function setupRandomEnvironment(container: IContainer, range: DateRange) 
 }
 
 export function addRandomTasks(bucket: IWalrusBucket, activity?: Activity) {
-  bucket.addNew(fakeString(), fakeSize())
+  let task = bucket.addNew(fakeString(), fakeSize())
 
   if (activity !== undefined) {
-
+    task.changeState(fakeString('state'), activity);
   }
 }
 
 export function addNRandomTasks(bucket: IWalrusBucket, n : number, activity?: Activity) {
   for (let index = 0; index < n; index++) {
-    addRandomTasks(bucket)
+    addRandomTasks(bucket, activity)
   }
+}
+
+export function getRandomBetween(min: number, max: number = 10000) {
+  min = Math.floor(min);
+  max = Math.floor(max);
+
+  return Math.floor(Math.random() * max) + min;
 }

@@ -2,7 +2,7 @@ import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
 import { ITask, TaskConstructor } from "@/task";
-import { addNRandomTasks, TimeHelper } from "./helpers";
+import { addNRandomTasks, getRandomBetween, TimeHelper } from "./helpers";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { Activity, none } from "@/generalTypes";
 
@@ -11,11 +11,13 @@ describe('Walrus Bucket should', () => {
   let walrusBucketConstructor: WalrusBucketConstructor;
   let taskConstructor: TaskConstructor;
   let stateConstructor: StateChangeConstructor;
+  let numberOfActive : number;
   let sut: IWalrusBucket;
   let dateHelper: TimeHelper;
 
   describe('getAllTasks optionally', () => {
     beforeEach(() => {
+      numberOfActive = getRandomBetween(5, 100);
       container = getContainer();
 
       dateHelper = new TimeHelper();
@@ -26,14 +28,14 @@ describe('Walrus Bucket should', () => {
       walrusBucketConstructor = container.build(IWalrusBucket);
       sut = walrusBucketConstructor("team A's queue");
 
-      addNRandomTasks(sut, 13, 'Active');
+      addNRandomTasks(sut, numberOfActive, 'Active');
       addNRandomTasks(sut, 5);
     });
 
     it('filter by Activity', () => {
       let r = sut.getAllTasks({ Activity: 'Active' });
 
-      expect(r).to.have.lengthOf(13);
+      expect(r).to.have.lengthOf(numberOfActive);
     });
   });
 });

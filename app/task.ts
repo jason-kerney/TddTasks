@@ -6,7 +6,7 @@ export abstract class ITask {
   abstract name: string;
   abstract size: Size | Unsized;
   abstract states: IStateChange;
-  abstract changeState(stateName: string, activity: Activity, activityDescriptor: string) : void
+  abstract changeState(stateName: string, activity: Activity, activityDescriptor?: string) : void
 }
 
 export type TaskConstructor = (name: string, size?: Size) => ITask;
@@ -25,7 +25,7 @@ class Task extends ITask {
     this.states = stateBuilder('Created', 'Non-Active', none);
   }
 
-  changeState(stateName: string, activity: Activity, activityDescriptor: string) : void {
+  changeState(stateName: string, activity: Activity, activityDescriptor: string = none) : void {
     this.states = this.stateBuilder(stateName, activity, activityDescriptor, this.states);
   }
 }
