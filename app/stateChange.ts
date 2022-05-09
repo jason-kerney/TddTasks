@@ -22,6 +22,10 @@ export abstract class IStateChange {
   getFirstUpdateDate(): Date {
     return this.getFirst().date;
   }
+
+  count(): number {
+    return 1;
+  }
 }
 
 class StateChange extends IStateChange {

@@ -37,6 +37,7 @@ describe('StateChange should', () => {
     expect(actual.activityDescriptor).to.equal(activityDescriptor);
     expect(actual.date).to.deep.equal(expectedDate);
     expect(actual.previous).to.equal(none);
+    expect(actual.count()).to.equal(1);
   });
 
   it('allow for a new state with activity and activity descriptor', () => {
