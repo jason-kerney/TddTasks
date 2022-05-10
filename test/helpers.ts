@@ -9,7 +9,6 @@ export class DateRange {
   private start: number;
   private end: number;
   constructor(start: Date | number, end: Date | number) {
-    console.log(`start: ${start}, end: ${end}`);
     if(end < start) {
       throw new Error(`Expected "${start}" <= "${end}"`);
     }
