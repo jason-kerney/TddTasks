@@ -22,7 +22,7 @@ export abstract class IWalrusBucket {
 
 export type WalrusBucketConstructor = (name: string) => IWalrusBucket;
 
-function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T[]) => void  {
+function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T[]) => T[]  {
   return function(items: T[], collector: T[]) {
     items.forEach(item => {
       if(!predicate(item)) {
@@ -31,6 +31,8 @@ function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T
 
       collector.push(item);
     });
+
+    return collector;
   }
 }
 
@@ -45,8 +47,8 @@ class WalrusBucket extends IWalrusBucket {
     this.name = name;
   }
 
-  private filterActivity(filter: ITaskFilter, results: ITask[]) {
-    collect<ITask>(item => item.activity === filter.activity)(this.tasks, results);
+  private filterActivity(filter: ITaskFilter, results: ITask[]) : ITask[] {
+    return collect<ITask>(item => item.activity === filter.activity)(this.tasks, results);
   }
 
   getAllTasks(filter?: ITaskFilter): ITask[] {
@@ -54,9 +56,7 @@ class WalrusBucket extends IWalrusBucket {
       return this.tasks;
     }
 
-    let r: ITask[] = [];
-
-    this.filterActivity(filter, r);
+    let r: ITask[] = this.filterActivity(filter, []);
 
     return r;
   }
