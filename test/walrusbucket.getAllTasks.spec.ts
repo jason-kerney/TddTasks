@@ -2,7 +2,7 @@ import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
 import { ITask, TaskConstructor } from "@/task";
-import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, TimeHelper } from "./helpers";
+import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, DateHelper } from "./helpers";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { Activity, none } from "@/generalTypes";
 
@@ -14,7 +14,7 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
   let numberOfActive : number;
   let numberOfInactive: number;
   let sut: IWalrusBucket;
-  let dateHelper: TimeHelper;
+  let dateHelper: DateHelper;
 
   describe('activity should', () => {
     beforeEach(() => {

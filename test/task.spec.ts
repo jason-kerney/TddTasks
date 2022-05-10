@@ -3,18 +3,18 @@ import { none } from "@/generalTypes";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { ITask, TaskConstructor } from "@/task";
 import { expect } from "chai";
-import { clean, TimeHelper } from "./helpers";
+import { clean, DateHelper } from "./helpers";
 
 describe('Task should', () => {
   let container: IContainer;
-  let dateHelper: TimeHelper;
+  let dateHelper: DateHelper;
   let builder: TaskConstructor;
   let stateBuilder: StateChangeConstructor;
   let initialState: IStateChange;
 
   beforeEach(() => {
     container = getContainer();
-    dateHelper = new TimeHelper();
+    dateHelper = new DateHelper();
     dateHelper.registerWith(container);
 
     stateBuilder = container.build(IStateChange) as StateChangeConstructor;

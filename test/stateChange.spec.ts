@@ -2,17 +2,17 @@ import { getContainer, IContainer } from "@/container";
 import { none } from "@/generalTypes";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { expect } from "chai";
-import { TimeHelper } from "./helpers";
+import { DateHelper } from "./helpers";
 
 describe('StateChange should', () => {
-  let dateHandler: TimeHelper;
+  let dateHandler: DateHelper;
 
   let container : IContainer;
   let builder : StateChangeConstructor;
 
   beforeEach(()=>{
     container = getContainer();
-    dateHandler = new TimeHelper()
+    dateHandler = new DateHelper()
     dateHandler.registerWith(container);
 
     builder = container.build(IStateChange) as StateChangeConstructor;

@@ -41,23 +41,27 @@ export class DateRange {
   }
 }
 
-export class TimeHelper {
-  private _date: Date;
+export class DateHelper {
+  private date: Date;
 
   constructor(init: Date | string = '3/14/1592') {
     if (init instanceof Date) {
-      this._date = init;
+      this.date = init;
       return;
     }
 
-    this._date = new Date(init);
+    this.date = new Date(init);
+  }
+
+  setDate(date: Date) {
+    this.date = date;
   }
 
   getDate(): () => Date {
     let th = this;
     return function () {
-      let r = th._date;
-      th._date.setDate(th._date.getDate() + 1);
+      let r = th.date;
+      th.date.setDate(th.date.getDate() + 1);
       return r;
     };
   }
@@ -68,10 +72,10 @@ export class TimeHelper {
   }
 
   private holdDate() {
-    let r = this._date;
+    let r = this.date;
     let th = this;
     return function reset() {
-      th._date = r;
+      th.date = r;
     };
   }
 
@@ -85,7 +89,7 @@ export class TimeHelper {
   }
 
   peekDate(): Date {
-    return this._date;
+    return this.date;
   }
 }
 
@@ -146,8 +150,8 @@ export function fakeSize(): Size | undefined {
   return 'Tiny';
 }
 
-export function setupRandomEnvironment(container: IContainer, range: DateRange): TimeHelper {
-  let dateHelper = new TimeHelper(range.getRandom());
+export function setupRandomEnvironment(container: IContainer, range: DateRange): DateHelper {
+  let dateHelper = new DateHelper(range.getRandom());
 
   dateHelper.registerWith(container);
   return dateHelper;
