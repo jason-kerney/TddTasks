@@ -31,6 +31,11 @@
       "description": "runs tests, on success commits and pushes."
     },
     {
+      "name": "check",
+      "command": "gittey clear && npm test && npm run precompile && gittey date",
+      "description": "runs tests."
+    },
+    {
       "name": "clear",
       "command": "cls && gittey date",
       "description": "clears screen and displays date/time when it was done"

@@ -34,13 +34,13 @@ describe('Walrus Bucket should', () => {
     });
 
     it('by Activity', () => {
-      let r = sut.getAllTasks({ Activity: 'Active' });
+      let r = sut.getAllTasks({ activity: 'Active' });
 
       expect(r).to.have.lengthOf(numberOfActive);
     });
 
     it('by Activity and return real items', () => {
-      let r = sut.getAllTasks({ Activity: 'Active' });
+      let r = sut.getAllTasks({ activity: 'Active' });
 
       for (let index = 0; index < numberOfActive; index++) {
         expect(r[index], `r[${index}]`).to.be.not.undefined;
@@ -48,7 +48,7 @@ describe('Walrus Bucket should', () => {
     });
 
     it('by Activity and return items of ITask', () => {
-      let r = sut.getAllTasks({ Activity: 'Active' });
+      let r = sut.getAllTasks({ activity: 'Active' });
 
       for (let index = 0; index < numberOfActive; index++) {
         expect(r[index], `r[${index}]`).to.be.instanceOf(ITask);
@@ -56,13 +56,13 @@ describe('Walrus Bucket should', () => {
     });
 
     it('by Non-Activity', () => {
-      let r = sut.getAllTasks({ Activity: 'Non-Active' });
+      let r = sut.getAllTasks({ activity: 'Non-Active' });
 
       expect(r).to.have.lengthOf(numberOfInactive);
     });
 
     it('by Non-Activity and return real items', () => {
-      let r = sut.getAllTasks({ Activity: 'Non-Active' });
+      let r = sut.getAllTasks({ activity: 'Non-Active' });
 
       for (let index = 0; index < numberOfInactive; index++) {
         expect(r[index], `r[${index}]`).to.be.not.undefined;
@@ -70,11 +70,11 @@ describe('Walrus Bucket should', () => {
     });
 
     it('by Non-Activity and return items of ITask', () => {
-      let r = sut.getAllTasks({ Activity: 'Non-Active' });
+      let r = sut.getAllTasks({ activity: 'Non-Active' });
 
-      for (let index = 0; index < numberOfActive; index++) {
-        expect(r[index], `r[${index}]`).to.be.instanceOf(ITask);
-      }
+      r.forEach((item, index) => {
+        expect(item, `r[${index}]`).to.be.instanceOf(ITask);
+      });
     });
   });
 });

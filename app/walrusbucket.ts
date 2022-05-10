@@ -4,7 +4,7 @@ import { Activity, Size, Unsized } from "./generalTypes";
 import { ITask, TaskConstructor } from "./task";
 
 export interface ITaskFilter {
-  Activity?: Activity
+  activity?: Activity
 }
 
 export abstract class IWalrusBucket {
@@ -22,6 +22,28 @@ export abstract class IWalrusBucket {
 
 export type WalrusBucketConstructor = (name: string) => IWalrusBucket;
 
+function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T[]) => void  {
+  return function(items: T[], collector: T[]) {
+    items.forEach(item => {
+      if(!predicate(item)) {
+        return;
+      }
+
+      collector.push(item);
+    });
+  }
+}
+
+function collectBasedOnFilter(key: string, filter: ITaskFilter): (items: ITask[], collector: ITask[]) => void {
+  let c = collect<ITask>(item => {
+    return filter[key] === item[key];
+  });
+
+  return function(items: ITask[], collector: ITask[]) {
+    c(items, collector);
+  }
+}
+
 class WalrusBucket extends IWalrusBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
@@ -34,18 +56,20 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   private filterActivity(filter: ITaskFilter, results: ITask[]) {
-    if (filter.Activity === undefined) {
+    if (filter.activity === undefined) {
       return;
     }
 
-    for (let index = 0; index < this.tasks.length; index++) {
-      const task = this.tasks[index];
-      if (task.states.activity !== filter.Activity) {
-        continue;
-      }
-      
-      results.push(task);
-    }
+    // for (let index = 0; index < this.tasks.length; index++) {
+    //   const task = this.tasks[index];
+    //   if (task.states.activity !== filter.Activity) {
+    //     continue;
+    //   }
+
+    //   results.push(task);
+    // }
+
+    collectBasedOnFilter('activity', filter)(this.tasks, results);
 
   }
 
