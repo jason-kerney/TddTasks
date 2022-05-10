@@ -45,6 +45,7 @@ describe('Task should', () => {
     expect(result.size).to.equal('No Size')
     expect(result.states).to.not.equal(none);
     expect(result.states).to.deep.equal(state);
+    expect(result.activity).to.equal(state.activity);
   });
 
   it('build a task with the different name', () => {
@@ -59,6 +60,7 @@ describe('Task should', () => {
     expect(result.size).to.equal('Tiny')
     expect(result.states).to.not.equal(none);
     expect(result.states).to.deep.equal(state);
+    expect(result.activity).to.equal(state.activity);
   });
 
   it('record a state change', () => {
@@ -72,12 +74,14 @@ describe('Task should', () => {
     task.changeState('ready', 'Active', 'ready is active because it means someone is working');
 
     expect(task.states).to.deep.equal(state);
+    expect(task.activity).to.equal(state.activity);
   });
 
   it('know its current state initially', () => {
     const task = builder('new Item');
 
     expect(task.states).to.deep.equal(task.states);
+    expect(task.activity).to.equal(task.states.activity);
   });
 
   it('know its current state after a change', () => {
