@@ -9,6 +9,7 @@ export class DateRange {
   private start: number;
   private end: number;
   constructor(start: Date | number, end: Date | number) {
+    console.log(`start: ${start}, end: ${end}`);
     if(end < start) {
       throw new Error(`Expected "${start}" <= "${end}"`);
     }
@@ -17,23 +18,22 @@ export class DateRange {
       this.start = start;
     }
     else {
-      this.start = start.getDate();
+      this.start = start.getTime();
     }
 
     if (typeof end === 'number') {
       this.end = end;
     }
     else {
-      this.end = end.getDate();
+      this.end = end.getTime();
     }
   }
 
   getRandom() : Date {
     const msInDay = 24 * 60 * 60 * 1000
-    let sDate = new Date(new Date(this.start).getUTCDate());
-    let eDate = new Date(new Date(this.end).getUTCDate());
+    let sDate = new Date(this.start);
 
-    let maxDays = Math.abs(eDate.getTime() - sDate.getTime()) / msInDay
+    let maxDays = Math.abs(this.end - this.start) / msInDay
 
     let days = Math.floor(Math.random() * maxDays);
 

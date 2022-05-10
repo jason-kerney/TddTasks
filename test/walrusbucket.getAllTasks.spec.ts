@@ -11,28 +11,32 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
   let walrusBucketConstructor: WalrusBucketConstructor;
   let taskConstructor: TaskConstructor;
   let stateConstructor: StateChangeConstructor;
-  let numberOfActive : number;
+  let numberOfActive: number;
   let numberOfInactive: number;
   let sut: IWalrusBucket;
   let dateHelper: DateHelper;
+  let startDate: Date;
+  let endDate: Date;
+
+  beforeEach(() => {
+    numberOfActive = getRandomBetween(0, 100);
+    numberOfInactive = getRandomBetween(0, 100);
+    container = getContainer();
+
+    dateHelper = setupRandomEnvironment(container, new DateRange(new Date("1-JAN-2020"), new Date("31-JAN-2020")));
+    startDate = dateHelper.peekDate();
+
+    taskConstructor = container.build(ITask);
+    stateConstructor = container.build(IStateChange)
+    walrusBucketConstructor = container.build(IWalrusBucket);
+    sut = walrusBucketConstructor("team A's queue");
+
+    addNRandomTasks(sut, numberOfActive, 'Active');
+    addNRandomTasks(sut, numberOfInactive);
+    endDate = dateHelper.peekDate();
+  });
 
   describe('activity should', () => {
-    beforeEach(() => {
-      numberOfActive = getRandomBetween(0, 100);
-      numberOfInactive= getRandomBetween(0, 100);
-      container = getContainer();
-
-      dateHelper = setupRandomEnvironment(container, new DateRange(new Date("1-JAN-2020"), new Date("31-JAN-2020")));
-
-      taskConstructor = container.build(ITask);
-      stateConstructor = container.build(IStateChange)
-      walrusBucketConstructor = container.build(IWalrusBucket);
-      sut = walrusBucketConstructor("team A's queue");
-
-      addNRandomTasks(sut, numberOfActive, 'Active');
-      addNRandomTasks(sut, numberOfInactive);
-    });
-
     it('have correct length for active', () => {
       let r = sut.getAllTasks({ activity: 'Active' });
 
@@ -62,5 +66,48 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
     });
   });
 
-  describe('by current date greater then', () => {});
+  describe('by current dateLessThen should', () => {
+    let workingRange: DateRange;
+    let dt: Date;
+    let expected: ITask[];
+
+    beforeEach(() => {
+      workingRange = new DateRange(startDate, endDate);
+
+      dt = workingRange.getRandom();
+      expected = getTasksLessThen(dt);
+      while (expected.length === 0) {
+        dt = workingRange.getRandom();
+        expected = getTasksLessThen(dt);
+      }
+    });
+
+    function getTasksLessThen(date: Date): ITask[] {
+      let r: ITask[] = [];
+
+      sut.getAllTasks().forEach(task => {
+        if (task.states.date < date) {
+          return;
+        }
+
+        r.push(task);
+      });
+
+      return r;
+    }
+
+    it('return the correct number of items', () => {
+      let r = sut.getAllTasks({ dateLessThen: dt });
+
+      expect(r).to.have.lengthOf(expected.length);
+    });
+
+    it('return the items that are correct', () => {
+      let r = sut.getAllTasks({ dateLessThen: dt });
+
+      expected.forEach((task, index) => {
+        expect(r, `expected[${index}]`).to.contain(task);
+      });
+    });
+  });
 });
