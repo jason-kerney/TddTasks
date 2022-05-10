@@ -66,7 +66,7 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
     });
   });
 
-  describe('by current dateLessThen should', () => {
+  describe('by current dateLessThenOrEqual should', () => {
     let workingRange: DateRange;
     let dt: Date;
     let expected: ITask[];
@@ -97,13 +97,13 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
     }
 
     it('return the correct number of items', () => {
-      let r = sut.getAllTasks({ dateLessThen: dt });
+      let r = sut.getAllTasks({ dateLessThenOrEqual: dt });
 
       expect(r).to.have.lengthOf(expected.length);
     });
 
     it('return the items that are correct', () => {
-      let r = sut.getAllTasks({ dateLessThen: dt });
+      let r = sut.getAllTasks({ dateLessThenOrEqual: dt });
 
       expected.forEach((task, index) => {
         expect(r, `expected[${index}]`).to.contain(task);
