@@ -34,16 +34,6 @@ function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T
   }
 }
 
-function collectBasedOnFilter(key: string, filter: ITaskFilter): (items: ITask[], collector: ITask[]) => void {
-  let c = collect<ITask>(item => {
-    return filter[key] === item[key];
-  });
-
-  return function(items: ITask[], collector: ITask[]) {
-    c(items, collector);
-  }
-}
-
 class WalrusBucket extends IWalrusBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
@@ -56,21 +46,7 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   private filterActivity(filter: ITaskFilter, results: ITask[]) {
-    if (filter.activity === undefined) {
-      return;
-    }
-
-    // for (let index = 0; index < this.tasks.length; index++) {
-    //   const task = this.tasks[index];
-    //   if (task.states.activity !== filter.Activity) {
-    //     continue;
-    //   }
-
-    //   results.push(task);
-    // }
-
-    collectBasedOnFilter('activity', filter)(this.tasks, results);
-
+    collect<ITask>(item => item.activity === filter.activity)(this.tasks, results);
   }
 
   getAllTasks(filter?: ITaskFilter): ITask[] {
@@ -78,7 +54,6 @@ class WalrusBucket extends IWalrusBucket {
       return this.tasks;
     }
 
-    let cnt = 0;
     let r: ITask[] = [];
 
     this.filterActivity(filter, r);

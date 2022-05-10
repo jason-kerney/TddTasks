@@ -6,7 +6,7 @@ import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, T
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { Activity, none } from "@/generalTypes";
 
-describe('Walrus Bucket should', () => {
+describe('Walrus Bucket getAllTasks filtered by', () => {
   let container: IContainer;
   let walrusBucketConstructor: WalrusBucketConstructor;
   let taskConstructor: TaskConstructor;
@@ -16,7 +16,7 @@ describe('Walrus Bucket should', () => {
   let sut: IWalrusBucket;
   let dateHelper: TimeHelper;
 
-  describe('getAllTasks optionally filtered ', () => {
+  describe('activity should', () => {
     beforeEach(() => {
       numberOfActive = getRandomBetween(0, 100);
       numberOfInactive= getRandomBetween(0, 100);
@@ -33,21 +33,13 @@ describe('Walrus Bucket should', () => {
       addNRandomTasks(sut, numberOfInactive);
     });
 
-    it('by Activity', () => {
+    it('have correct length for active', () => {
       let r = sut.getAllTasks({ activity: 'Active' });
 
       expect(r).to.have.lengthOf(numberOfActive);
     });
 
-    it('by Activity and return real items', () => {
-      let r = sut.getAllTasks({ activity: 'Active' });
-
-      for (let index = 0; index < numberOfActive; index++) {
-        expect(r[index], `r[${index}]`).to.be.not.undefined;
-      }
-    });
-
-    it('by Activity and return items of ITask', () => {
+    it('return the tasks for active', () => {
       let r = sut.getAllTasks({ activity: 'Active' });
 
       for (let index = 0; index < numberOfActive; index++) {
@@ -55,21 +47,13 @@ describe('Walrus Bucket should', () => {
       }
     });
 
-    it('by Non-Activity', () => {
+    it('have correct length for non-active', () => {
       let r = sut.getAllTasks({ activity: 'Non-Active' });
 
       expect(r).to.have.lengthOf(numberOfInactive);
     });
 
-    it('by Non-Activity and return real items', () => {
-      let r = sut.getAllTasks({ activity: 'Non-Active' });
-
-      for (let index = 0; index < numberOfInactive; index++) {
-        expect(r[index], `r[${index}]`).to.be.not.undefined;
-      }
-    });
-
-    it('by Non-Activity and return items of ITask', () => {
+    it('return the tasks for non-active', () => {
       let r = sut.getAllTasks({ activity: 'Non-Active' });
 
       r.forEach((item, index) => {
@@ -77,4 +61,6 @@ describe('Walrus Bucket should', () => {
       });
     });
   });
+
+  describe('by current date greater then', () => {});
 });
