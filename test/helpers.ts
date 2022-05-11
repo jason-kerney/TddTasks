@@ -50,9 +50,12 @@ export class DateRange {
 
 export class DateHelper {
   private date: Date;
+  private readonly repeatDays: number;
+  private repeatCnt = 0;
 
   constructor(init: Date | string = '3/14/1592') {
     this.date = new Date(init);
+    this.repeatDays = Math.floor(Math.random() * 10);
   }
 
   setDate(date: Date) {
@@ -62,8 +65,11 @@ export class DateHelper {
   getDate(): () => Date {
     let th = this;
     return function () {
+      th.repeatCnt++;
       let r = new Date(th.date);
-      th.date.setDate(th.date.getDate() + 1);
+      if(th.repeatDays <= th.repeatCnt){
+        th.date.setDate(th.date.getDate() + 1);
+      }
       return r;
     };
   }
@@ -75,9 +81,11 @@ export class DateHelper {
 
   private holdDate() {
     let r = new Date(this.date);
+    let cnt = this.repeatCnt;
     let th = this;
     return function reset() {
       th.date = r;
+      th.repeatCnt = cnt;
     };
   }
 
