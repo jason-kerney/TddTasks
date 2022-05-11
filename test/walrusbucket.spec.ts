@@ -1,16 +1,11 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
-import { ITask, TaskConstructor } from "@/task";
 import { DateHelper } from "./helpers";
-import { IStateChange, StateChangeConstructor } from "@/stateChange";
-import { none } from "@/generalTypes";
 
 describe('Walrus Bucket should', () => {
   let container: IContainer;
   let walrusBucketConstructor: WalrusBucketConstructor;
-  let taskConstructor: TaskConstructor;
-  let stateConstructor: StateChangeConstructor;
   let sut: IWalrusBucket;
   let dateHelper: DateHelper;
 
@@ -20,8 +15,6 @@ describe('Walrus Bucket should', () => {
     dateHelper = new DateHelper();
     dateHelper.registerWith(container);
 
-    taskConstructor = container.build(ITask);
-    stateConstructor = container.build(IStateChange)
     walrusBucketConstructor = container.build(IWalrusBucket);
     sut = walrusBucketConstructor("team A's queue");
   });
