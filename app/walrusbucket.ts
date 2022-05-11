@@ -57,14 +57,16 @@ class WalrusBucket extends IWalrusBucket {
     return collect<ITask>(item => item.activity === filter.activity)(from, results);
   }
 
-  private filterDateLessThen(filter:ITaskFilter, from: ITask[]) : ITask[] {
+  private filterDateLessThenOrEqual(filter:ITaskFilter, from: ITask[]) : ITask[] {
     if(filter.dateLessThenOrEqual === undefined) {
       return from;
     }
 
     let results: ITask[] = [];
     let dt = filter.dateLessThenOrEqual;
-    return collect<ITask>(item => item.states.date <= dt)(from, results);
+    return collect<ITask>(item => {
+      return item.states.date <= dt;
+    })(from, results);
   }
 
   getAllTasks(filter?: ITaskFilter): ITask[] {
@@ -73,8 +75,7 @@ class WalrusBucket extends IWalrusBucket {
     }
 
     let r: ITask[] = this.filterActivity(filter, this.tasks);
-    let rc = r.length;
-    r = this.filterDateLessThen(filter, r);
+    r = this.filterDateLessThenOrEqual(filter, r);
 
     return r;
   }

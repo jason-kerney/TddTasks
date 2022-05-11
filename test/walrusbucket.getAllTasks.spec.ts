@@ -1,16 +1,13 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
-import { ITask, TaskConstructor } from "@/task";
+import { ITask } from "@/task";
 import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, DateHelper } from "./helpers";
-import { IStateChange, StateChangeConstructor } from "@/stateChange";
-import { Activity, none } from "@/generalTypes";
+import { Activity } from "@/generalTypes";
 
 describe('Walrus Bucket getAllTasks filtered by', () => {
   let container: IContainer;
   let walrusBucketConstructor: WalrusBucketConstructor;
-  let taskConstructor: TaskConstructor;
-  let stateConstructor: StateChangeConstructor;
   let numberOfActive: number;
   let numberOfInactive: number;
   let sut: IWalrusBucket;
@@ -26,8 +23,6 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
     dateHelper = setupRandomEnvironment(container, new DateRange(new Date("1-JAN-2020"), new Date("31-JAN-2020")));
     startDate = dateHelper.peekDate();
 
-    taskConstructor = container.build(ITask);
-    stateConstructor = container.build(IStateChange)
     walrusBucketConstructor = container.build(IWalrusBucket);
     sut = walrusBucketConstructor("team A's queue");
 
@@ -75,18 +70,18 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
       workingRange = new DateRange(startDate, endDate);
 
       dt = workingRange.getRandom();
-      expected = getTasksLessThen(dt);
+      expected = getTasksLessThenEqualTo(dt);
       while (expected.length === 0) {
         dt = workingRange.getRandom();
-        expected = getTasksLessThen(dt);
+        expected = getTasksLessThenEqualTo(dt);
       }
     });
 
-    function getTasksLessThen(date: Date): ITask[] {
+    function getTasksLessThenEqualTo(date: Date): ITask[] {
       let r: ITask[] = [];
 
       sut.getAllTasks().forEach(task => {
-        if (task.states.date < date) {
+        if (date < task.states.date) {
           return;
         }
 

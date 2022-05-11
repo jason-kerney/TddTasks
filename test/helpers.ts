@@ -38,17 +38,20 @@ export class DateRange {
 
     return new Date(sDate.setDate(sDate.getDate() + days));
   }
+
+  getStart() : Date {
+    return new Date(this.start);
+  }
+
+  getEnd() : Date {
+    return new Date(this.end);
+  }
 }
 
 export class DateHelper {
   private date: Date;
 
   constructor(init: Date | string = '3/14/1592') {
-    if (init instanceof Date) {
-      this.date = init;
-      return;
-    }
-
     this.date = new Date(init);
   }
 
@@ -59,7 +62,7 @@ export class DateHelper {
   getDate(): () => Date {
     let th = this;
     return function () {
-      let r = th.date;
+      let r = new Date(th.date);
       th.date.setDate(th.date.getDate() + 1);
       return r;
     };
@@ -71,7 +74,7 @@ export class DateHelper {
   }
 
   private holdDate() {
-    let r = this.date;
+    let r = new Date(this.date);
     let th = this;
     return function reset() {
       th.date = r;
@@ -88,7 +91,7 @@ export class DateHelper {
   }
 
   peekDate(): Date {
-    return this.date;
+    return new Date(this.date);
   }
 }
 
