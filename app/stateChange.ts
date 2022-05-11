@@ -20,7 +20,7 @@ export abstract class IStateChange {
   }
 
   getFirstUpdateDate(): Date {
-    return this.getFirst().date;
+    return new Date(this.getFirst().date);
   }
 
   count(): number {
@@ -44,7 +44,7 @@ class StateChange extends IStateChange {
   constructor(stateName: string, activity: Activity, activityDescriptor: string | None, date: Date, previous : IStateChange | None) {
     super();
     this.stateName = stateName;
-    this.date = date;
+    this.date = new Date(date);
     this.activity = activity;
     this.activityDescriptor = activityDescriptor;
     this.previous = previous;

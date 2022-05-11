@@ -1,13 +1,11 @@
-//let expectedDate : Date;
-
 import { IContainer } from "@/container";
 import { Activity, none, None, Size } from "@/generalTypes";
 import { IWalrusBucket } from "@/walrusbucket";
 import { v4 as uuidv4 } from 'uuid';
 
 export class DateRange {
-  private start: number;
-  private end: number;
+  private readonly start: number;
+  private readonly end: number;
   constructor(start: Date | number, end: Date | number) {
     if(end < start) {
       throw new Error(`Expected "${start}" <= "${end}"`);
@@ -36,7 +34,9 @@ export class DateRange {
 
     let days = Math.floor(Math.random() * maxDays);
 
-    return new Date(sDate.setDate(sDate.getDate() + days));
+    sDate.setDate(sDate.getDate() + days);
+
+    return sDate;
   }
 
   getStart() : Date {
@@ -56,7 +56,7 @@ export class DateHelper {
   }
 
   setDate(date: Date) {
-    this.date = date;
+    this.date = new Date(date);
   }
 
   getDate(): () => Date {
