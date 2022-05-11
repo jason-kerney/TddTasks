@@ -102,12 +102,8 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
 
     beforeEach(() => {
       dt = getValidDate((task, d) => task.states.date <= d);
-      expected = getTasksLessThenEqualTo(dt);
+      expected = getTasksBy(sut.getAllTasks(), (task) => task.states.date <= dt);
     });
-
-    function getTasksLessThenEqualTo(date: Date): ITask[] {
-      return getTasksBy(sut.getAllTasks(), (task) => task.states.date <= date);
-    }
 
     it('return the correct number of items', () => {
       let r = sut.getAllTasks({ dateLessThenOrEqual: dt });
@@ -125,32 +121,22 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
   });
 
   describe('both activity and dateLessThenOrEqual should', () => {
-    let workingRange: DateRange;
-
     beforeEach(() => {
       workingRange = new DateRange(startDate, endDate);
     });
 
-    function getAllByDate(tasks: ITask[], date: Date): ITask[] {
-      return getTasksBy(tasks, task => task.states.date <= date);
-    }
-
-    function getAllByActivity(tasks: ITask[], activity: Activity): ITask[] {
-      return getTasksBy(tasks, task => task.activity === activity);
-    }
-
     it('return active before date', () => {
-      let [expected, dt] = getValid(
+      let [expectedTasks, searchDate] = getValid(
         sut.getAllTasks(),
         (task, dt) => task.activity === 'Active'
           && task.states.date <= dt
       );
 
-      let r = sut.getAllTasks({ activity: 'Active', dateLessThenOrEqual: dt });
+      let r = sut.getAllTasks({ activity: 'Active', dateLessThenOrEqual: searchDate });
 
-      expect(r).to.have.lengthOf(expected.length);
+      expect(r).to.have.lengthOf(expectedTasks.length);
 
-      expected.forEach((task: ITask) => {
+      expectedTasks.forEach((task: ITask) => {
         expect(r).to.contain(task);
       });
     });
