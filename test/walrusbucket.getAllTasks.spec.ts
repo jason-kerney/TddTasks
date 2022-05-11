@@ -163,4 +163,49 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
       });
     });
   });
+
+  describe('current dateLessThenOr should', () => {
+    let workingRange: DateRange;
+    let dt: Date;
+    let expected: ITask[];
+
+    beforeEach(() => {
+      workingRange = new DateRange(startDate, endDate);
+
+      dt = workingRange.getRandom();
+      expected = getTasksLessThen(dt);
+      while (expected.length === 0) {
+        dt = workingRange.getRandom();
+        expected = getTasksLessThen(dt);
+      }
+    });
+
+    function getTasksLessThen(date: Date): ITask[] {
+      let r: ITask[] = [];
+
+      sut.getAllTasks().forEach(task => {
+        if (date <= task.states.date) {
+          return;
+        }
+
+        r.push(task);
+      });
+
+      return r;
+    }
+
+    it('return the correct number of items', () => {
+      let r = sut.getAllTasks({ dateLessThen: dt });
+
+      expect(r).to.have.lengthOf(expected.length);
+    });
+
+    it('return the items that are correct', () => {
+      let r = sut.getAllTasks({ dateLessThen: dt });
+
+      expected.forEach((task, index) => {
+        expect(r, `expected[${index}]`).to.contain(task);
+      });
+    });
+  });
 });

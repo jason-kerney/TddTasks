@@ -6,6 +6,7 @@ import { ITask, TaskConstructor } from "./task";
 export interface ITaskFilter {
   activity?: Activity;
   dateLessThenOrEqual?: Date;
+  dateLessThen?: Date;
 }
 
 export abstract class IWalrusBucket {
@@ -69,6 +70,18 @@ class WalrusBucket extends IWalrusBucket {
     })(from, results);
   }
 
+  private filterDateLessThen(filter:ITaskFilter, from: ITask[]) : ITask[] {
+    if(filter.dateLessThen === undefined) {
+      return from;
+    }
+
+    let results: ITask[] = [];
+    let dt = filter.dateLessThen;
+    return collect<ITask>(item => {
+      return item.states.date < dt;
+    })(from, results);
+  }
+
   getAllTasks(filter?: ITaskFilter): ITask[] {
     if (filter === undefined) {
       return this.tasks;
@@ -76,6 +89,7 @@ class WalrusBucket extends IWalrusBucket {
 
     let r: ITask[] = this.filterActivity(filter, this.tasks);
     r = this.filterDateLessThenOrEqual(filter, r);
+    r = this.filterDateLessThen(filter, r);
 
     return r;
   }
