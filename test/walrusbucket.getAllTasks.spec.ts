@@ -14,6 +14,40 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
   let dateHelper: DateHelper;
   let startDate: Date;
   let endDate: Date;
+  let workingRange: DateRange;
+
+  function getTasksBy(tasks: ITask[], predicate: (task: ITask) => boolean): ITask[] {
+    let r: ITask[] = [];
+
+    tasks.forEach(task => {
+      if (!predicate(task)) {
+        return;
+      }
+
+      r.push(task);
+    });
+
+    return r;
+  }
+
+  function getValidDate(predicate: (task: ITask, date: Date) => boolean): Date {
+    let d: Date = workingRange.getRandom();
+    let tasks = getTasksBy(sut.getAllTasks(), task => predicate(task, d));
+    let cnt = 0;
+    while (tasks.length === 0) {
+      if (100 < cnt) throw new Error('Search timed out');
+      d = workingRange.getRandom();
+      tasks = getTasksBy(sut.getAllTasks(), task => predicate(task, d));;
+      cnt++;
+    }
+
+    return d;
+  }
+
+  function getValid(tasks: ITask[], predicate: (task: ITask, date: Date) => boolean): [ITask[], Date] {
+    const dt = getValidDate(predicate);
+    return [getTasksBy(tasks, task => predicate(task, dt)), dt]
+  }
 
   beforeEach(() => {
     numberOfActive = getRandomBetween(0, 100);
@@ -29,6 +63,7 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
     addNRandomTasks(sut, numberOfActive, 'Active');
     addNRandomTasks(sut, numberOfInactive);
     endDate = dateHelper.peekDate();
+    workingRange = new DateRange(startDate, endDate);
   });
 
   describe('activity should', () => {
@@ -62,33 +97,16 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
   });
 
   describe('current dateLessThenOrEqual should', () => {
-    let workingRange: DateRange;
     let dt: Date;
     let expected: ITask[];
 
     beforeEach(() => {
-      workingRange = new DateRange(startDate, endDate);
-
-      dt = workingRange.getRandom();
+      dt = getValidDate((task, d) => task.states.date <= d);
       expected = getTasksLessThenEqualTo(dt);
-      while (expected.length === 0) {
-        dt = workingRange.getRandom();
-        expected = getTasksLessThenEqualTo(dt);
-      }
     });
 
     function getTasksLessThenEqualTo(date: Date): ITask[] {
-      let r: ITask[] = [];
-
-      sut.getAllTasks().forEach(task => {
-        if (date < task.states.date) {
-          return;
-        }
-
-        r.push(task);
-      });
-
-      return r;
+      return getTasksBy(sut.getAllTasks(), (task) => task.states.date <= date);
     }
 
     it('return the correct number of items', () => {
@@ -114,45 +132,19 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
     });
 
     function getAllByDate(tasks: ITask[], date: Date): ITask[] {
-      const r: ITask[] = [];
-
-      tasks.forEach(task => {
-        if (date < task.states.date) {
-          return;
-        }
-
-        r.push(task);
-      });
-
-      return r;
+      return getTasksBy(tasks, task => task.states.date <= date);
     }
 
     function getAllByActivity(tasks: ITask[], activity: Activity): ITask[] {
-      const r: ITask[] = [];
-
-      tasks.forEach(task => {
-        if (task.activity === activity) {
-          r.push(task);
-        }
-      });
-
-      return r;
-    }
-
-    function getGoodFilterDate(tasks: ITask[], activity: Activity): [Date, ITask[]] {
-      let dt: Date = workingRange.getRandom();
-      let r = getAllByActivity(getAllByDate(sut.getAllTasks(), dt), activity);
-
-      while (r.length === 0) {
-        dt = workingRange.getRandom();
-        r = getAllByActivity(getAllByDate(sut.getAllTasks(), dt), activity);
-      }
-
-      return [dt, r];
+      return getTasksBy(tasks, task => task.activity === activity);
     }
 
     it('return active before date', () => {
-      let [dt, expected] = getGoodFilterDate(sut.getAllTasks(), 'Active');
+      let [expected, dt] = getValid(
+        sut.getAllTasks(),
+        (task, dt) => task.activity === 'Active'
+          && task.states.date <= dt
+      );
 
       let r = sut.getAllTasks({ activity: 'Active', dateLessThenOrEqual: dt });
 
@@ -165,34 +157,12 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
   });
 
   describe('current dateLessThenOr should', () => {
-    let workingRange: DateRange;
     let dt: Date;
     let expected: ITask[];
 
     beforeEach(() => {
-      workingRange = new DateRange(startDate, endDate);
-
-      dt = workingRange.getRandom();
-      expected = getTasksLessThen(dt);
-      while (expected.length === 0) {
-        dt = workingRange.getRandom();
-        expected = getTasksLessThen(dt);
-      }
+      [expected, dt] = getValid(sut.getAllTasks(), (task, dt) => task.states.date < dt);
     });
-
-    function getTasksLessThen(date: Date): ITask[] {
-      let r: ITask[] = [];
-
-      sut.getAllTasks().forEach(task => {
-        if (date <= task.states.date) {
-          return;
-        }
-
-        r.push(task);
-      });
-
-      return r;
-    }
 
     it('return the correct number of items', () => {
       let r = sut.getAllTasks({ dateLessThen: dt });
@@ -207,5 +177,22 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
         expect(r, `expected[${index}]`).to.contain(task);
       });
     });
+
+    // it('return the results of dateLessThen if dateLessThen has an earlier date then dateLessThenOrEqualTo', () => {
+    //   // let d1: Date = workingRange.getRandom();
+    //   // let d2: Date = workingRange.getRandom();
+    //   // let cnt = 0;
+    //   // while(d1 == d2) {
+    //   //   if(100 <= 100) throw Error("timed out");
+    //   //   d1 = workingRange.getRandom();
+    //   //   d2 = workingRange.getRandom();
+    //   // }
+
+    //   let r = sut.getAllTasks({ dateLessThen: dt });
+
+    //   expected.forEach((task, index) => {
+    //     expect(r, `expected[${index}]`).to.contain(task);
+    //   });
+    // });
   });
 });
