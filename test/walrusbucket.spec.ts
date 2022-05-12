@@ -17,9 +17,9 @@ class FakeFilter implements ITaskFilter {
   }
 }
 
-function fakeFilterBuilder(callback: (tasks: ITask[], filter?: ITaskFilterCriteria) => ITask[]) : TaskFilterConstructor {
-  return function(tasks: ITask[], filter?: ITaskFilterCriteria): ITaskFilter {
-    return new FakeFilter(() =>{
+function fakeFilterBuilder(callback: (tasks: ITask[], filter?: ITaskFilterCriteria) => ITask[]): TaskFilterConstructor {
+  return function (tasks: ITask[], filter?: ITaskFilterCriteria): ITaskFilter {
+    return new FakeFilter(() => {
       return callback(tasks, filter);
     });
   }
@@ -86,9 +86,25 @@ describe('Walrus Bucket should', () => {
     expect(r).to.equal(expectedTasks);
   });
 
-  it('getCompleteTasks', () =>{
+  it('getCompleteTasks', () => {
     const expected: ITaskFilterCriteria = { activity: 'Closed' };
     let r = sut.getCompleteTasks();
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getCompleteTasks with criteria', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Closed', dateGraterThen: new Date('01-JAN-2021') };
+    let r = sut.getCompleteTasks({ dateGraterThen: new Date('01-JAN-2021') });
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getCompleteTasks with wrong activity', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Closed' };
+    let r = sut.getCompleteTasks({ activity: 'Active' });
 
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
