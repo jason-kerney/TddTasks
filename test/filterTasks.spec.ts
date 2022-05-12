@@ -67,8 +67,8 @@ describe('filter tasks by', () => {
 
   beforeEach(() => {
     baseTasks = [];
-    numberOfActive = getRandomBetween(0, 100);
-    numberOfInactive = getRandomBetween(0, 100);
+    numberOfActive = getRandomBetween(100, 500);
+    numberOfInactive = getRandomBetween(100, 500);
     container = getContainer();
 
     dateHelper = setupRandomEnvironment(container, new DateRange(new Date("1-JAN-2020"), new Date("31-JAN-2020")));
@@ -78,7 +78,7 @@ describe('filter tasks by', () => {
 
     workingRange = buildDateRangeBy(dateHelper, _ => {
       addNRandomTasks(baseTasks, taskBuilder, numberOfActive, 'Active');
-      addNRandomTasks(baseTasks, taskBuilder, numberOfInactive);
+      addNRandomTasks(baseTasks, taskBuilder, numberOfInactive, 'Non-Active');
     });
 
     startDate = workingRange.getStart();
