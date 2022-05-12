@@ -56,6 +56,17 @@ function filterBy<T>(key: string, predicate: (filter: T, value: T) => Boolean): 
   };
 }
 
+function chain(filter: ITaskFilter, ...funcs: ((filter: ITaskFilter, r: ITask[]) => ITask[])[]): (tasks: ITask[]) => ITask[] {
+  return function(tasks: ITask[]) : ITask[] {
+    let last: ITask[] = tasks;
+    funcs.forEach(func => {
+      last = func(filter, last);
+    });
+
+    return last;
+  }
+}
+
 class WalrusBucket extends IWalrusBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
@@ -77,14 +88,14 @@ class WalrusBucket extends IWalrusBucket {
       return this.tasks;
     }
 
-    // console.log(`? <= ${filter.dateLessThenOrEqual}\n\t? < ${filter.dateLessThen}\n\t? == "${filter.activity}"\n\t? >= ${filter.dateGraterThenOrEqual}`)
-
-    let r: ITask[] = this.filterActivity(filter, this.tasks);
-    r = this.filterDateLessThenOrEqual(filter, r);
-    r = this.filterDateLessThen(filter, r);
-    r = this.filterDateGreaterThenOrEqual(filter, r);
-    r = this.filterDateGreaterThen(filter, r);
-
+    let r = chain(
+      filter,
+      this.filterActivity,
+      this.filterDateLessThenOrEqual,
+      this.filterDateLessThen,
+      this.filterDateGreaterThenOrEqual,
+      this.filterDateGreaterThen,
+    )(this.tasks);
     return r;
   }
 
