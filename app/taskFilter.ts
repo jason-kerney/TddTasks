@@ -85,10 +85,6 @@ class TaskFilter extends ITaskFilter {
 
   getResults(): ITask[] {
     if (this.results !== undefined) return this.results;
-    if (this.filter === undefined) {
-      this.results = this.tasks;
-      return this.tasks
-    };
 
     this.results = this.filterAll(this.tasks);
     return this.results;
