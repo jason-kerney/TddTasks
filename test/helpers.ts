@@ -1,7 +1,15 @@
 import { IContainer } from "@/container";
 import { Activity, none, None, Size } from "@/generalTypes";
-import { IWalrusBucket } from "@/walrusbucket";
+import { ITask, TaskConstructor } from "@/task";
 import { v4 as uuidv4 } from 'uuid';
+
+export function buildDateRangeBy(dateHelper: DateHelper, code: (helper: DateHelper) => void) : DateRange {
+  let startDate = dateHelper.peekDate();
+  code(dateHelper);
+  let endDate = dateHelper.peekDate();
+
+  return new DateRange(startDate, endDate);
+}
 
 export class DateRange {
   private readonly start: number;
@@ -167,17 +175,19 @@ export function setupRandomEnvironment(container: IContainer, range: DateRange):
   return dateHelper;
 }
 
-export function addRandomTasks(bucket: IWalrusBucket, activity?: Activity) {
-  let task = bucket.addNew(fakeString(), fakeSize())
+export function addRandomTasks(tasks: ITask[], taskBuilder: TaskConstructor, activity?: Activity) {
+  let task = taskBuilder(fakeString(), fakeSize())
 
   if (activity !== undefined) {
     task.changeState(fakeString('state'), activity);
   }
+
+  tasks.push(task);
 }
 
-export function addNRandomTasks(bucket: IWalrusBucket, n : number, activity?: Activity) {
+export function addNRandomTasks(tasks: ITask[], taskBuilder: TaskConstructor, n : number, activity?: Activity) {
   for (let index = 0; index < n; index++) {
-    addRandomTasks(bucket, activity)
+    addRandomTasks(tasks, taskBuilder, activity)
   }
 }
 
