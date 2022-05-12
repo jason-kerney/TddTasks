@@ -32,7 +32,7 @@ class WalrusBucket extends IWalrusBucket {
     this.taskFilterBuilder = taskFilterBuilder;
   }
 
-  getAllTasks(filter?: ITaskFilterCriteria): ITask[] {
+  getAllTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     return this.taskFilterBuilder(this.tasks, filter).getResults();
   }
 
