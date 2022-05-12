@@ -7,6 +7,7 @@ export interface ITaskFilter {
   dateLessThenOrEqual?: Date;
   dateLessThen?: Date;
   dateGraterThenOrEqual?: Date;
+  dateGraterThen?: Date;
 }
 
 function getTaskValue(task: ITask, filterKey: string): any {
@@ -16,6 +17,7 @@ function getTaskValue(task: ITask, filterKey: string): any {
     case 'dateLessThenOrEqual':
     case 'dateLessThen':
     case 'dateGraterThenOrEqual':
+    case 'dateGraterThen':
       return task.states.date;
     default:
       throw new Error(`"${filterKey}" is not part of ITaskFilter`);
@@ -62,6 +64,7 @@ class WalrusBucket extends IWalrusBucket {
   private readonly filterDateLessThenOrEqual = filterBy<Date>('dateLessThenOrEqual', (filter, value) => value <= filter);
   private readonly filterDateLessThen = filterBy<Date>('dateLessThen', (filter, value) => value < filter);
   private readonly filterDateGreaterThenOrEqual = filterBy<Date>('dateGraterThenOrEqual', (filter, value) => value >= filter);
+  private readonly filterDateGreaterThen = filterBy<Date>('dateGraterThen', (filterValue, value) => value > filterValue);
 
   constructor(name: string, taskBuilder: TaskConstructor) {
     super();
@@ -80,6 +83,7 @@ class WalrusBucket extends IWalrusBucket {
     r = this.filterDateLessThenOrEqual(filter, r);
     r = this.filterDateLessThen(filter, r);
     r = this.filterDateGreaterThenOrEqual(filter, r);
+    r = this.filterDateGreaterThen(filter, r);
 
     return r;
   }
