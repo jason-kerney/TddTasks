@@ -230,4 +230,26 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
       });
     });
   });
+
+  describe('both activity and dateLessThen should', () => {
+    beforeEach(() => {
+      workingRange = new DateRange(startDate, endDate);
+    });
+
+    it('return active before date', () => {
+      let [expectedTasks, searchDate] = getTasksAndDate(
+        sut.getAllTasks(),
+        (task, dt) => task.activity === 'Active'
+          && task.states.date < dt
+      );
+
+      let r = sut.getAllTasks({ activity: 'Active', dateLessThenOrEqual: searchDate });
+
+      expect(r).to.have.lengthOf(expectedTasks.length);
+
+      expectedTasks.forEach((task: ITask) => {
+        expect(r).to.contain(task);
+      });
+    });
+  });
 });
