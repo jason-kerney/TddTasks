@@ -58,15 +58,12 @@ class WalrusBucket extends IWalrusBucket {
   public name: string;
   private readonly filterActivity = filterBy<Activity>('activity', (filter, value) => filter === value)
   private readonly filterDateLessThenOrEqual = filterBy<Date>('dateLessThenOrEqual', (filter, value) => value <= filter);
+  private readonly filterDateLessThen = filterBy<Date>('dateLessThen', (filter, value) => value < filter);
 
   constructor(name: string, taskBuilder: TaskConstructor) {
     super();
     this.taskBuilder = taskBuilder;
     this.name = name;
-  }
-
-  private filterDateLessThen(filter:ITaskFilter, from: ITask[]) : ITask[] {
-    return filterBy<Date>('dateLessThen', (filter, value) => value < filter)(filter, from);
   }
 
   getAllTasks(filter?: ITaskFilter): ITask[] {
