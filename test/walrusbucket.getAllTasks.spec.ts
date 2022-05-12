@@ -77,6 +77,7 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
     addNRandomTasks(sut, numberOfInactive);
     endDate = dateHelper.peekDate();
     workingRange = new DateRange(startDate, endDate);
+    // console.log(`tasks: ${startDate} - ${endDate}`)
   });
 
   describe('activity should', () => {
@@ -195,7 +196,7 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
         ([_date1, _date2, tasks]) => 0 < tasks.length
       );
 
-      let result = sut.getAllTasks({dateLessThen: d1, dateLessThenOrEqual: d2});
+      let result = sut.getAllTasks({ dateLessThen: d1, dateLessThenOrEqual: d2 });
 
       expect(result).to.have.lengthOf(expectedTasks.length);
 
@@ -221,7 +222,7 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
         ([_date1, _date2, tasks]) => 0 < tasks.length
       );
 
-      let result = sut.getAllTasks({dateLessThen: d2, dateLessThenOrEqual: d1});
+      let result = sut.getAllTasks({ dateLessThen: d2, dateLessThenOrEqual: d1 });
 
       expect(result).to.have.lengthOf(expectedTasks.length);
 
@@ -283,7 +284,7 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
       let [expectedTasks, searchDate] = getTasksAndDate(
         sut.getAllTasks(),
         (task, dt) => task.activity === 'Active'
-          && task.states.date >= dt
+          && dt < task.states.date
       );
 
       let r = sut.getAllTasks({ activity: 'Active', dateGraterThenOrEqual: searchDate });
@@ -292,6 +293,41 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
 
       expectedTasks.forEach((task: ITask) => {
         expect(r).to.contain(task);
+      });
+    });
+  });
+
+  describe('inclusively between dates should', () => {
+    let dt1: Date;
+    let dt2: Date;
+    let expectedTasks: ITask[];
+
+    beforeEach(() => {
+      [dt1, dt2, expectedTasks] = getValid<[Date, Date, ITask[]]>(
+        () => {
+          let date1 = workingRange.getRandom();
+          let date2 = workingRange.getRandom();
+
+          if(date2 < date1) {
+            let dt = date1;
+            date1 = date2;
+            date2 = dt;
+          }
+
+          let results = getTasksBy(sut.getAllTasks(), task => date1 <= task.states.date && task.states.date <= date2 );
+          return [date1, date2, results];
+        },
+        ([date1, date2, results]) => 0 < results.length && date1 != date2
+      );
+    });
+
+    it('have expected tasks', () => {
+      let result = sut.getAllTasks({dateLessThenOrEqual: dt2, dateGraterThenOrEqual: dt1});
+
+      expect(result).to.have.lengthOf(expectedTasks.length);
+
+      expectedTasks.forEach(task => {
+        expect(result).to.contain(task)
       });
     });
   });
