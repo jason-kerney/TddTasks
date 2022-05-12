@@ -35,20 +35,6 @@ export abstract class IWalrusBucket {
 
 export type WalrusBucketConstructor = (name: string) => IWalrusBucket;
 
-function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T[]) => T[]  {
-  return function(items: T[], collector: T[]) {
-    items.forEach(item => {
-      if(!predicate(item)) {
-        return;
-      }
-
-      collector.push(item);
-    });
-
-    return collector;
-  }
-}
-
 function filterBy<T>(key: string, predicate: (filter: T, value: T) => Boolean): (filter: ITaskFilter, tasks: ITask[]) => ITask[] {
   return function (filter: ITaskFilter, tasks: ITask[]): ITask[] {
     let filterValue = filter[key];
