@@ -178,17 +178,56 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
       });
     });
 
-    it.skip('return the results of dateLessThen if dateLessThen has an earlier date then dateLessThenOrEqualTo', () => {
-      // let d1: Date = workingRange.getRandom();
-      // let d2: Date = workingRange.getRandom();
-      // let cnt = 0;
-      // while(d1 == d2) {
-      //   if(100 <= 100) throw Error("timed out");
-      //   d1 = workingRange.getRandom();
-      //   d2 = workingRange.getRandom();
-      // }
+    it('return the results of dateLessThen if dateLessThen has an earlier date then dateLessThenOrEqualTo', () => {
+      let [d1, d2, expectedTasks] = getValid<[Date, Date, ITask[]]>(
+        () => {
+          let date1 = workingRange.getRandom();
+          let date2 = workingRange.getRandom();
+          if (date2 < date1) {
+            let t = date1;
+            date1 = date2;
+            date2 = t;
+          }
+          let tasks = getTasksBy(sut.getAllTasks(), task => task.states.date < date1);
 
-      throw new Error('test not done yet');
+          return [date1, date2, tasks];
+        },
+        ([_date1, _date2, tasks]) => 0 < tasks.length
+      );
+
+      let result = sut.getAllTasks({dateLessThen: d1, dateLessThenOrEqual: d2});
+
+      expect(result).to.have.lengthOf(expectedTasks.length);
+
+      expectedTasks.forEach(task => {
+        expect(result).to.contain(task);
+      });
+    });
+
+    it('return the results of dateLessThenOrEqual if dateLessThenOrEqualTo has an earlier date then dateLessThen', () => {
+      let [d1, d2, expectedTasks] = getValid<[Date, Date, ITask[]]>(
+        () => {
+          let date1 = workingRange.getRandom();
+          let date2 = workingRange.getRandom();
+          if (date2 < date1) {
+            let t = date1;
+            date1 = date2;
+            date2 = t;
+          }
+          let tasks = getTasksBy(sut.getAllTasks(), task => task.states.date <= date1);
+
+          return [date1, date2, tasks];
+        },
+        ([_date1, _date2, tasks]) => 0 < tasks.length
+      );
+
+      let result = sut.getAllTasks({dateLessThen: d2, dateLessThenOrEqual: d1});
+
+      expect(result).to.have.lengthOf(expectedTasks.length);
+
+      expectedTasks.forEach(task => {
+        expect(result).to.contain(task);
+      });
     });
   });
 });
