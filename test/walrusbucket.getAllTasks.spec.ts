@@ -252,4 +252,29 @@ describe('Walrus Bucket getAllTasks filtered by', () => {
       });
     });
   });
+
+  describe('current dateGraterThenOrEqual should', () => {
+    let dt: Date;
+    let expected: ITask[];
+
+    beforeEach(() => {
+      [expected, dt] = getTasksAndDate(sut.getAllTasks(), (task, d) => {
+        return task.states.date >= d;
+      });
+    });
+
+    it('return the correct number of items', () => {
+      let r = sut.getAllTasks({ dateGraterThenOrEqual: dt });
+
+      expect(r).to.have.lengthOf(expected.length);
+    });
+
+    it('return the items that are correct', () => {
+      let r = sut.getAllTasks({ dateGraterThenOrEqual: dt });
+
+      expected.forEach((task, index) => {
+        expect(r, `expected[${index}]`).to.contain(task);
+      });
+    });
+  });
 });
