@@ -9,8 +9,7 @@ export abstract class IWalrusBucket {
   abstract add(task: ITask): ITask;
   abstract addNew(name: string, size?: Size): ITask;
   abstract getCompleteTasks(filter?: ITaskFilterCriteria) : ITask[];
-
-  // abstract getActiveTasks();
+  abstract getActiveTasks(filter?: ITaskFilterCriteria): ITask[];
 
   // abstract getNonActiveTasks();
 }
@@ -47,6 +46,11 @@ class WalrusBucket extends IWalrusBucket {
 
   getCompleteTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     filter.activity = 'Closed';
+    return this.getAllTasks(filter);
+  }
+
+  getActiveTasks(filter: ITaskFilterCriteria = {}): ITask[] {
+    filter.activity = 'Active';
     return this.getAllTasks(filter);
   }
 }

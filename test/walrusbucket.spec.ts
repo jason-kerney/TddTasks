@@ -31,10 +31,13 @@ describe('Walrus Bucket should', () => {
   let sut: IWalrusBucket;
   let filterCriteria: ITaskFilterCriteria | undefined;
   let expectedTasks: ITask[];
-  let receivedTasks: ITask[];
+  let receivedTasks: ITask[] | undefined;
 
   beforeEach(() => {
     expectedTasks = [];
+    receivedTasks = undefined;
+    filterCriteria = undefined;
+
     container = getContainer();
     container.register(ITaskFilter, (_f) => fakeFilterBuilder((tasks, filter) => {
       filterCriteria = filter;
@@ -105,6 +108,30 @@ describe('Walrus Bucket should', () => {
   it('getCompleteTasks with wrong activity', () => {
     const expected: ITaskFilterCriteria = { activity: 'Closed' };
     let r = sut.getCompleteTasks({ activity: 'Active' });
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getActiveTasks', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Active' };
+    let r = sut.getActiveTasks();
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getActiveTasks with criteria', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Active', dateGraterThen: new Date('01-JAN-2021') };
+    let r = sut.getActiveTasks({ dateGraterThen: new Date('01-JAN-2021') });
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getActiveTasks with wrong activity', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Active' };
+    let r = sut.getActiveTasks({ activity: 'Non-Active' });
 
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
