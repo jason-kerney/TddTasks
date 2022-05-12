@@ -3,6 +3,7 @@ import { ITask, taskBuilder } from "./task";
 import { none, None } from "./generalTypes";
 import { MapType } from "./map";
 import { IWalrusBucket, walrusBucketBuilder } from "./walrusbucket";
+import { ITaskFilter, taskFilterBuilder } from "./taskFilter";
 
 export type Builder<T> = (...parameters: any) => T;
 export type Factory<T> = (factory: IContainer) => Builder<T>
@@ -31,6 +32,7 @@ class Container extends IContainer {
     this.map[IStateChange.name] = stateChangeBuilder;
     this.map[ITask.name] = taskBuilder;
     this.map[IWalrusBucket.name] = walrusBucketBuilder;
+    this.map[ITaskFilter.name] = taskFilterBuilder
   }
 
   register<T>(type: abstract new(...parameters: any) => T, factory: Factory<T>) {

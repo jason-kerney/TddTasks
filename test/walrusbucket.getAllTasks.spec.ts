@@ -3,7 +3,6 @@ import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
 import { ITask } from "@/task";
 import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, DateHelper, Indenter } from "./helpers";
-import { Activity } from "@/generalTypes";
 
 describe('Walrus Bucket getAllTasks filtered by', () => {
   let container: IContainer;
