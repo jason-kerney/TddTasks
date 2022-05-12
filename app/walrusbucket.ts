@@ -1,6 +1,5 @@
 import { IContainer } from "@/container";
-import { strictEqual } from "assert";
-import { Activity, Size, Unsized } from "./generalTypes";
+import { Activity, Size } from "./generalTypes";
 import { ITask, TaskConstructor } from "./task";
 
 export interface ITaskFilter {
@@ -80,15 +79,7 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   private filterDateLessThenOrEqual(filter:ITaskFilter, from: ITask[]) : ITask[] {
-    if(filter.dateLessThenOrEqual === undefined) {
-      return from;
-    }
-
-    let results: ITask[] = [];
-    let dt = filter.dateLessThenOrEqual;
-    return collect<ITask>(item => {
-      return item.states.date <= dt;
-    })(from, results);
+    return filterBy<Date>('dateLessThenOrEqual', (filter, value) => value <= filter)(filter, from);
   }
 
   private filterDateLessThen(filter:ITaskFilter, from: ITask[]) : ITask[] {
