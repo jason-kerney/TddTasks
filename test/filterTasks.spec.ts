@@ -1,8 +1,7 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
-import { IWalrusBucket } from "@/walrusbucket";
 import { ITask, TaskConstructor } from "@/task";
-import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, DateHelper, Indenter, buildDateRangeBy } from "./helpers";
+import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, DateHelper, buildDateRangeBy } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "@/taskFilter";
 
 describe('filter tasks by', () => {
@@ -337,8 +336,6 @@ describe('filter tasks by', () => {
       });
     });
   });
-
-
 
   describe('current dateGraterThen should', () => {
     let dt: Date;

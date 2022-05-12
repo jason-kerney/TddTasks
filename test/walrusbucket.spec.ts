@@ -1,9 +1,9 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
-import { DateHelper } from "./helpers";
+import { addNRandomTasks, DateHelper } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "@/taskFilter";
-import { ITask } from "@/task";
+import { ITask, TaskConstructor } from "@/task";
 
 class FakeFilter implements ITaskFilter {
   private callback: () => ITask[];
@@ -17,11 +17,10 @@ class FakeFilter implements ITaskFilter {
   }
 }
 
-function fakeFilterBuilder(callback: (tasks: ITask[], filter?: ITaskFilterCriteria) => void) : TaskFilterConstructor {
+function fakeFilterBuilder(callback: (tasks: ITask[], filter?: ITaskFilterCriteria) => ITask[]) : TaskFilterConstructor {
   return function(tasks: ITask[], filter?: ITaskFilterCriteria): ITaskFilter {
     return new FakeFilter(() =>{
-      callback(tasks, filter);
-      return tasks;
+      return callback(tasks, filter);
     });
   }
 }
@@ -30,19 +29,25 @@ describe('Walrus Bucket should', () => {
   let container: IContainer;
   let walrusBucketConstructor: WalrusBucketConstructor;
   let sut: IWalrusBucket;
-  let dateHelper: DateHelper;
   let filterCriteria: ITaskFilterCriteria | undefined;
-  let filterTasks: ITask[];
+  let expectedTasks: ITask[];
+  let receivedTasks: ITask[];
 
   beforeEach(() => {
+    expectedTasks = [];
     container = getContainer();
     container.register(ITaskFilter, (_f) => fakeFilterBuilder((tasks, filter) => {
-      filterTasks = tasks;
       filterCriteria = filter;
+      receivedTasks = tasks;
+      return expectedTasks;
     }));
 
-    dateHelper = new DateHelper();
+    let dateHelper = new DateHelper();
     dateHelper.registerWith(container);
+
+
+    let taskBuilder: TaskConstructor = container.build(ITask);
+    addNRandomTasks(expectedTasks, taskBuilder, 20);
 
     walrusBucketConstructor = container.build(IWalrusBucket);
     sut = walrusBucketConstructor("team A's queue");
@@ -62,20 +67,30 @@ describe('Walrus Bucket should', () => {
   });
 
   it('have no tasks when created', () => {
-    expect(sut.getAllTasks()).to.have.lengthOf(0);
+    sut.getAllTasks();
+    expect(receivedTasks).to.have.lengthOf(0);
   });
 
-  it('should filter tasks with empty criteria', () => {
+  it('getAllTasks filtered tasks with empty criteria', () => {
     sut.getAllTasks();
 
     expect(filterCriteria).to.not.be.undefined;
   });
 
-  it('should filter by specified criteria', () => {
+  it('getAllTasks filtered by specified criteria', () => {
     const expected: ITaskFilterCriteria = { activity: 'Active' };
 
-    sut.getAllTasks(expected);
+    let r = sut.getAllTasks(expected);
 
     expect(filterCriteria).to.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getCompleteTasks', () =>{
+    const expected: ITaskFilterCriteria = { activity: 'Closed' };
+    let r = sut.getCompleteTasks();
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
   });
 });
