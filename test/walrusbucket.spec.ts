@@ -136,4 +136,28 @@ describe('Walrus Bucket should', () => {
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
   });
+
+  it('getNonActiveTasks', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Non-Active' };
+    let r = sut.getNonActiveTasks();
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getNonActiveTasks with criteria', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Non-Active', dateGraterThen: new Date('01-JAN-2021') };
+    let r = sut.getNonActiveTasks({ dateGraterThen: new Date('01-JAN-2021') });
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
+
+  it('getNonActiveTasks with wrong activity', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Non-Active' };
+    let r = sut.getNonActiveTasks({ activity: 'Closed' });
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+  });
 });
