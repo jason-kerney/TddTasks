@@ -88,7 +88,7 @@ class WalrusBucket extends IWalrusBucket {
       return this.tasks;
     }
 
-    let r = chain(
+    return chain(
       filter,
       this.filterActivity,
       this.filterDateLessThenOrEqual,
@@ -96,7 +96,6 @@ class WalrusBucket extends IWalrusBucket {
       this.filterDateGreaterThenOrEqual,
       this.filterDateGreaterThen,
     )(this.tasks);
-    return r;
   }
 
   add(task: ITask): ITask {
