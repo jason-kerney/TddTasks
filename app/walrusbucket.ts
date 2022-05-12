@@ -61,7 +61,7 @@ class WalrusBucket extends IWalrusBucket {
   private readonly filterActivity = filterBy<Activity>('activity', (filter, value) => filter === value)
   private readonly filterDateLessThenOrEqual = filterBy<Date>('dateLessThenOrEqual', (filter, value) => value <= filter);
   private readonly filterDateLessThen = filterBy<Date>('dateLessThen', (filter, value) => value < filter);
-  private readonly filterDateGreaterThenOrEqual = filterBy<Date>('dateGraterThenOrEqual', (filter, value) => filter < value);
+  private readonly filterDateGreaterThenOrEqual = filterBy<Date>('dateGraterThenOrEqual', (filter, value) => value >= filter);
 
   constructor(name: string, taskBuilder: TaskConstructor) {
     super();
@@ -73,6 +73,8 @@ class WalrusBucket extends IWalrusBucket {
     if (filter === undefined) {
       return this.tasks;
     }
+
+    // console.log(`? <= ${filter.dateLessThenOrEqual}\n\t? < ${filter.dateLessThen}\n\t? == "${filter.activity}"\n\t? >= ${filter.dateGraterThenOrEqual}`)
 
     let r: ITask[] = this.filterActivity(filter, this.tasks);
     r = this.filterDateLessThenOrEqual(filter, r);
