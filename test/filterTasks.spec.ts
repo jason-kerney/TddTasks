@@ -61,7 +61,7 @@ describe('filter tasks by', () => {
     return [resultTasks, d];
   }
 
-  function filterTasks(tasks: ITask[], filter: ITaskFilterCriteria): ITask[] {
+  function filterTasks(tasks: ITask[], filter?: ITaskFilterCriteria): ITask[] {
     return tasksFilterBuilder(tasks, filter).getResults();
   }
 
@@ -85,11 +85,31 @@ describe('filter tasks by', () => {
     endDate = workingRange.getEnd();
   });
 
+  describe('undefined filter should', () => {
+    it('return all results', () => {
+      let r = filterTasks(baseTasks);
+
+      expect(r).to.have.lengthOf(baseTasks.length);
+
+      baseTasks.forEach(task => {
+        expect(r).to.contain(task);
+      });
+    });
+  });
+
   describe('activity should', () => {
     it('have correct length for active', () => {
       let r = filterTasks(baseTasks, { activity: 'Active' });
 
       expect(r).to.have.lengthOf(numberOfActive);
+    });
+
+    it('return same results on second call', () => {
+      let filter = tasksFilterBuilder(baseTasks, { activity: 'Active' })
+      let expected = filter.getResults();
+      let r = filter.getResults();
+
+      expect(r).to.equal(expected);
     });
 
     it('return the tasks for active', () => {
