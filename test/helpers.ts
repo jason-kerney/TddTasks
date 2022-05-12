@@ -187,3 +187,30 @@ export function getRandomBetween(min: number, max: number = 10000) {
 
   return Math.floor(Math.random() * max) + min;
 }
+
+export class Indenter {
+  private cnt = 0;
+
+  increment(): Indenter {
+    this.cnt++;
+    return this;
+  }
+
+  decrement(): Indenter {
+    if(0 < this.cnt) {
+      return this;
+    }
+
+    this.cnt--;
+    return this;
+  }
+
+  get(): string {
+    let r = "";
+    for (let index = 0; index < this.cnt; index++) {
+      r += '\t';
+    }
+
+    return r;
+  }
+}
