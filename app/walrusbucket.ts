@@ -50,7 +50,7 @@ function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T
   }
 }
 
-function collect2<T>(key: string, predicate: (filter: T, value: T) => Boolean): (filter: ITaskFilter, tasks: ITask[]) => ITask[] {
+function filterBy<T>(key: string, predicate: (filter: T, value: T) => Boolean): (filter: ITaskFilter, tasks: ITask[]) => ITask[] {
   return function (filter: ITaskFilter, tasks: ITask[]): ITask[] {
     let filterValue = filter[key];
     if(filterValue === undefined) {
@@ -71,15 +71,12 @@ class WalrusBucket extends IWalrusBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
   public name: string;
+  private readonly filterActivity = filterBy<Activity>('activity', (filter, value) => filter === value)
 
   constructor(name: string, taskBuilder: TaskConstructor) {
     super();
     this.taskBuilder = taskBuilder;
     this.name = name;
-  }
-
-  private filterActivity(filter: ITaskFilter, from: ITask[]) : ITask[] {
-    return collect2<Activity>('activity', (filter, value) => filter === value)(filter, from);
   }
 
   private filterDateLessThenOrEqual(filter:ITaskFilter, from: ITask[]) : ITask[] {
