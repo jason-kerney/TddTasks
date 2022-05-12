@@ -70,4 +70,12 @@ describe('Walrus Bucket should', () => {
 
     expect(filterCriteria).to.not.be.undefined;
   });
+
+  it('should filter by specified criteria', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Active' };
+
+    sut.getAllTasks(expected);
+
+    expect(filterCriteria).to.equal(expected);
+  });
 });
