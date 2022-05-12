@@ -80,15 +80,7 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   private filterDateLessThen(filter:ITaskFilter, from: ITask[]) : ITask[] {
-    if(filter.dateLessThen === undefined) {
-      return from;
-    }
-
-    let results: ITask[] = [];
-    let dt = filter.dateLessThen;
-    return collect<ITask>(item => {
-      return item.states.date < dt;
-    })(from, results);
+    return filterBy<Date>('dateLessThen', (filter, value) => value < filter)(filter, from);
   }
 
   getAllTasks(filter?: ITaskFilter): ITask[] {
