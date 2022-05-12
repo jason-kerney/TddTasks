@@ -9,6 +9,18 @@ export interface ITaskFilter {
   dateLessThen?: Date;
 }
 
+function getTaskValue(task: ITask, filterKey: string): any {
+  switch (filterKey) {
+    case 'activity':
+      return task.activity;
+    case 'dateLessThenOrEqual':
+    case 'dateLessThen':
+      return task.states.date;
+    default:
+      throw new Error(`"${filterKey}" is not part of ITaskFilter`);
+  }
+}
+
 export abstract class IWalrusBucket {
   abstract name: string;
   abstract getAllTasks(filter?: ITaskFilter): ITask[];
@@ -38,6 +50,23 @@ function collect<T>(predicate: (item: T) => Boolean) : (items: T[], collector: T
   }
 }
 
+function collect2<T>(key: string, predicate: (filter: T, value: T) => Boolean): (filter: ITaskFilter, tasks: ITask[]) => ITask[] {
+  return function (filter: ITaskFilter, tasks: ITask[]): ITask[] {
+    let filterValue = filter[key];
+    if(filterValue === undefined) {
+      return tasks;
+    }
+
+    let r: ITask[] = [];
+    tasks.forEach(task => {
+      if(!predicate(filterValue, getTaskValue(task, key))) return;
+      r.push(task);
+    });
+
+    return r;
+  };
+}
+
 class WalrusBucket extends IWalrusBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
@@ -50,12 +79,7 @@ class WalrusBucket extends IWalrusBucket {
   }
 
   private filterActivity(filter: ITaskFilter, from: ITask[]) : ITask[] {
-    if(filter.activity === undefined) {
-      return from;
-    }
-
-    let results: ITask[] = [];
-    return collect<ITask>(item => item.activity === filter.activity)(from, results);
+    return collect2<Activity>('activity', (filter, value) => filter === value)(filter, from);
   }
 
   private filterDateLessThenOrEqual(filter:ITaskFilter, from: ITask[]) : ITask[] {
