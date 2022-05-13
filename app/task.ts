@@ -20,7 +20,7 @@ class Task extends ITask {
     return this.iName;
   }
 
-  private iSize: Size | Unsized;
+  private readonly iSize: Size | Unsized;
   get size(): Size | Unsized {
     return this.iSize;
   }
@@ -30,9 +30,8 @@ class Task extends ITask {
     return this.iStates;
   }
 
-  private iActivity: Activity;
   get activity(): Activity {
-    return this.iActivity;
+    return this.states.activity;
   }
 
   constructor(name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor) {
@@ -41,12 +40,10 @@ class Task extends ITask {
     this.iSize = size;
     this.stateBuilder = stateBuilder;
     this.iStates = stateBuilder('Created', 'Non-Active', none);
-    this.iActivity = this.states.activity;
   }
 
   changeState(stateName: string, activity: Activity, activityDescriptor: string = none) : void {
     this.iStates = this.stateBuilder(stateName, activity, activityDescriptor, this.states);
-    this.iActivity = this.states.activity;
   }
 }
 

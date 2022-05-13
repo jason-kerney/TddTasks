@@ -35,27 +35,27 @@ export abstract class IStateChange {
 }
 
 class StateChange extends IStateChange {
-  readonly iStateName: string;
+  private readonly iStateName: string;
   get stateName(): string {
     return this.iStateName;
   }
 
-  readonly iDate: Date;
+  private readonly iDate: Date;
   get date(): Date {
     return this.iDate;
   }
 
-  readonly iActivity: Activity;
+  private readonly iActivity: Activity;
   get activity(): Activity {
     return this.iActivity;
   }
 
-  readonly iActivityDescriptor: string | None;
+  private readonly iActivityDescriptor: string | None;
   get activityDescriptor(): string {
     return this.iActivityDescriptor;
   }
 
-  readonly iPrevious: IStateChange | "none";
+  private readonly iPrevious: IStateChange | "none";
   get previous(): IStateChange | "none" {
     return this.iPrevious;
   }

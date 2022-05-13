@@ -4,7 +4,7 @@ import { ITask, TaskConstructor } from "./task";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "./taskFilter";
 
 export abstract class ITeamBucket {
-  abstract readonly name: string;
+  abstract get name(): string;
   abstract getAllTasks(filter?: ITaskFilterCriteria): ITask[];
   abstract add(task: ITask): ITask;
   abstract addNew(name: string, size?: Size): ITask;
@@ -15,17 +15,20 @@ export abstract class ITeamBucket {
 
 export type TeamBucketConstructor = (name: string) => ITeamBucket;
 
-
 class TeamBucket extends ITeamBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
-  public readonly name: string;
   private readonly taskFilterBuilder: TaskFilterConstructor;
+
+  private readonly iName: string;
+  get name(): string {
+    return this.iName;
+  }
 
   constructor(name: string, taskBuilder: TaskConstructor, taskFilterBuilder) {
     super();
     this.taskBuilder = taskBuilder;
-    this.name = name;
+    this.iName = name;
     this.taskFilterBuilder = taskFilterBuilder;
   }
 
