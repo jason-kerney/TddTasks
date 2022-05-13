@@ -70,7 +70,15 @@ class TaskFilter extends ITaskFilter {
   private readonly filterDateGreaterThen = filterBy<Date>('dateGraterThen', (filterValue, value) => value > filterValue);
 
   get filterCriteria(): ITaskFilterCriteria {
-    return {};
+    let r : ITaskFilterCriteria = {}
+
+    if(this.iFilter.activity) r.activity = this.iFilter.activity;
+    if(this.iFilter.dateGraterThen) r.dateGraterThen = new Date(this.iFilter.dateGraterThen);
+    if(this.iFilter.dateGraterThenOrEqual) r.dateGraterThenOrEqual = new Date(this.iFilter.dateGraterThenOrEqual);
+    if(this.iFilter.dateLessThen) r.dateLessThen = new Date(this.iFilter.dateLessThen);
+    if(this.iFilter.dateLessThenOrEqual) r.dateLessThenOrEqual = new Date(this.iFilter.dateLessThenOrEqual);
+
+    return r;
   }
 
   constructor(tasks: ITask[], filter: ITaskFilterCriteria = {}) {
