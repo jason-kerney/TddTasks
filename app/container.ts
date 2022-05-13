@@ -2,7 +2,7 @@ import { IStateChange, stateChangeBuilder } from "./stateChange";
 import { ITask, taskBuilder } from "./task";
 import { none, None } from "./generalTypes";
 import { MapType } from "./map";
-import { ITeamBucket, weamBucketBuilder } from "./teamBucket";
+import { ITeamBucket, teamBucketBuilder } from "./teamBucket";
 import { ITaskFilter, taskFilterBuilder } from "./taskFilter";
 
 export type Builder<T> = (...parameters: any) => T;
@@ -31,7 +31,7 @@ class Container extends IContainer {
     this.map[Date.name] = (_factory) => () => { return new Date(Date.now()) };
     this.map[IStateChange.name] = stateChangeBuilder;
     this.map[ITask.name] = taskBuilder;
-    this.map[ITeamBucket.name] = weamBucketBuilder;
+    this.map[ITeamBucket.name] = teamBucketBuilder;
     this.map[ITaskFilter.name] = taskFilterBuilder
   }
 

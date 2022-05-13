@@ -59,7 +59,7 @@ class TeamBucket extends ITeamBucket {
   }
 }
 
-export function weamBucketBuilder(factory: IContainer): TeamBucketConstructor {
+export function teamBucketBuilder(factory: IContainer): TeamBucketConstructor {
   return function (name: string): ITeamBucket {
     return new TeamBucket(name, factory.build(ITask), factory.build(ITaskFilter));
   };

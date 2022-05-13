@@ -25,9 +25,9 @@ function fakeFilterBuilder(callback: (tasks: ITask[], filter?: ITaskFilterCriter
   }
 }
 
-describe('Walrus Bucket should', () => {
+describe('Team Bucket should', () => {
   let container: IContainer;
-  let weamBucketConstructor: TeamBucketConstructor;
+  let teamBucketConstructor: TeamBucketConstructor;
   let sut: ITeamBucket;
   let filterCriteria: ITaskFilterCriteria | undefined;
   let expectedTasks: ITask[];
@@ -52,8 +52,8 @@ describe('Walrus Bucket should', () => {
     let taskBuilder: TaskConstructor = container.build(ITask);
     addNRandomTasks(expectedTasks, taskBuilder, 20);
 
-    weamBucketConstructor = container.build(ITeamBucket);
-    sut = weamBucketConstructor("team A's queue");
+    teamBucketConstructor = container.build(ITeamBucket);
+    sut = teamBucketConstructor("team A's queue");
   });
 
   it('be registered with the container', () => {
@@ -65,7 +65,7 @@ describe('Walrus Bucket should', () => {
   });
 
   it('have the name set even if it is different', () => {
-    let bucket = weamBucketConstructor("Blue's clues")
+    let bucket = teamBucketConstructor("Blue's clues")
     expect(bucket.name).to.equal("Blue's clues");
   });
 
