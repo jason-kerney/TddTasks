@@ -95,6 +95,12 @@ describe('filter tasks by', () => {
         expect(r).to.contain(task);
       });
     });
+
+    it('show the filter as empty object',() => {
+      let sut = tasksFilterBuilder(baseTasks);
+
+      expect(sut.filterCriteria).to.deep.equal({});
+    });
   });
 
   describe('activity should', () => {

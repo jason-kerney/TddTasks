@@ -54,12 +54,13 @@ function chain(filter: ITaskFilterCriteria, ...funcs: ((filter: ITaskFilterCrite
 
 export abstract class ITaskFilter {
   abstract getResults(): ITask[];
+  abstract get filterCriteria(): ITaskFilterCriteria;
 }
 
 class TaskFilter extends ITaskFilter {
   private readonly tasks: ITask[];
   private results?: ITask[];
-  private filter: ITaskFilterCriteria;
+  private iFilter: ITaskFilterCriteria;
   private readonly filterAll: (tasks: ITask[]) => ITask[];
 
   private readonly filterActivity = filterBy<Activity>('activity', (filter, value) => filter === value)
@@ -68,10 +69,14 @@ class TaskFilter extends ITaskFilter {
   private readonly filterDateGreaterThenOrEqual = filterBy<Date>('dateGraterThenOrEqual', (filter, value) => value >= filter);
   private readonly filterDateGreaterThen = filterBy<Date>('dateGraterThen', (filterValue, value) => value > filterValue);
 
+  get filterCriteria(): ITaskFilterCriteria {
+    return {};
+  }
+
   constructor(tasks: ITask[], filter: ITaskFilterCriteria = {}) {
     super();
     this.tasks = tasks;
-    this.filter = filter;
+    this.iFilter = filter;
 
     this.filterAll = chain(
       filter,

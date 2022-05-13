@@ -7,13 +7,19 @@ import { ITask, TaskConstructor } from "@/task";
 
 class FakeFilter implements ITaskFilter {
   private callback: () => ITask[];
+  private iFilter: ITaskFilterCriteria;
 
-  constructor(callback: () => ITask[]) {
+  constructor(callback: () => ITask[], filter: ITaskFilterCriteria = {}) {
     this.callback = callback;
+    this.iFilter = filter;
   }
 
   getResults(): ITask[] {
     return this.callback();
+  }
+
+  get filterCriteria(): ITaskFilterCriteria {
+    return this.iFilter;
   }
 }
 
@@ -21,7 +27,7 @@ function fakeFilterBuilder(callback: (tasks: ITask[], filter?: ITaskFilterCriter
   return function (tasks: ITask[], filter?: ITaskFilterCriteria): ITaskFilter {
     return new FakeFilter(() => {
       return callback(tasks, filter);
-    });
+    }, filter);
   }
 }
 
