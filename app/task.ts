@@ -3,34 +3,50 @@ import { Activity, none, Size, Unsized } from "./generalTypes";
 import { IStateChange, StateChangeConstructor } from "./stateChange";
 
 export abstract class ITask {
-  abstract name: string;
-  abstract size: Size | Unsized;
-  abstract states: IStateChange;
-  abstract activity: Activity;
+  abstract readonly name: string;
+  abstract readonly size: Size | Unsized;
+  abstract get states(): IStateChange;
+  abstract get activity(): Activity;
   abstract changeState(stateName: string, activity: Activity, activityDescriptor?: string) : void
 }
 
 export type TaskConstructor = (name: string, size?: Size) => ITask;
 
 class Task extends ITask {
-  name: string;
-  size: Size | Unsized;
-  states: IStateChange;
-  activity: Activity;
   private stateBuilder: StateChangeConstructor;
+
+  private readonly iName: string;
+  get name(): string {
+    return this.iName;
+  }
+
+  private iSize: Size | Unsized;
+  get size(): Size | Unsized {
+    return this.iSize;
+  }
+
+  private iStates: IStateChange;
+  get states(): IStateChange{
+    return this.iStates;
+  }
+
+  private iActivity: Activity;
+  get activity(): Activity {
+    return this.iActivity;
+  }
 
   constructor(name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor) {
     super();
-    this.name = name;
-    this.size = size;
+    this.iName = name;
+    this.iSize = size;
     this.stateBuilder = stateBuilder;
-    this.states = stateBuilder('Created', 'Non-Active', none);
-    this.activity = this.states.activity;
+    this.iStates = stateBuilder('Created', 'Non-Active', none);
+    this.iActivity = this.states.activity;
   }
 
   changeState(stateName: string, activity: Activity, activityDescriptor: string = none) : void {
-    this.states = this.stateBuilder(stateName, activity, activityDescriptor, this.states);
-    this.activity = this.states.activity;
+    this.iStates = this.stateBuilder(stateName, activity, activityDescriptor, this.states);
+    this.iActivity = this.states.activity;
   }
 }
 
