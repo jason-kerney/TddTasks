@@ -1,6 +1,6 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
-import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
+import { ITeamBucket, TeamBucketConstructor } from "@/teamBucket";
 import { addNRandomTasks, DateHelper } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "@/taskFilter";
 import { ITask, TaskConstructor } from "@/task";
@@ -27,8 +27,8 @@ function fakeFilterBuilder(callback: (tasks: ITask[], filter?: ITaskFilterCriter
 
 describe('Walrus Bucket should', () => {
   let container: IContainer;
-  let walrusBucketConstructor: WalrusBucketConstructor;
-  let sut: IWalrusBucket;
+  let weamBucketConstructor: TeamBucketConstructor;
+  let sut: ITeamBucket;
   let filterCriteria: ITaskFilterCriteria | undefined;
   let expectedTasks: ITask[];
   let receivedTasks: ITask[] | undefined;
@@ -52,12 +52,12 @@ describe('Walrus Bucket should', () => {
     let taskBuilder: TaskConstructor = container.build(ITask);
     addNRandomTasks(expectedTasks, taskBuilder, 20);
 
-    walrusBucketConstructor = container.build(IWalrusBucket);
-    sut = walrusBucketConstructor("team A's queue");
+    weamBucketConstructor = container.build(ITeamBucket);
+    sut = weamBucketConstructor("team A's queue");
   });
 
   it('be registered with the container', () => {
-    expect(sut).to.be.instanceOf(IWalrusBucket);
+    expect(sut).to.be.instanceOf(ITeamBucket);
   });
 
   it('have the name set', () => {
@@ -65,7 +65,7 @@ describe('Walrus Bucket should', () => {
   });
 
   it('have the name set even if it is different', () => {
-    let bucket = walrusBucketConstructor("Blue's clues")
+    let bucket = weamBucketConstructor("Blue's clues")
     expect(bucket.name).to.equal("Blue's clues");
   });
 

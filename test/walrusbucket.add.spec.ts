@@ -1,6 +1,6 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
-import { IWalrusBucket, WalrusBucketConstructor } from "@/walrusbucket";
+import { ITeamBucket, TeamBucketConstructor } from "@/teamBucket";
 import { ITask, TaskConstructor } from "@/task";
 import { DateHelper } from "./helpers";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
@@ -8,10 +8,10 @@ import { none } from "@/generalTypes";
 
 describe('walrus bucket should', () => {
   let container: IContainer;
-  let walrusBucketConstructor: WalrusBucketConstructor;
+  let weamBucketConstructor: TeamBucketConstructor;
   let taskConstructor: TaskConstructor;
   let stateConstructor: StateChangeConstructor;
-  let sut: IWalrusBucket;
+  let sut: ITeamBucket;
   let dateHelper: DateHelper;
 
   beforeEach(() => {
@@ -22,8 +22,8 @@ describe('walrus bucket should', () => {
 
     taskConstructor = container.build(ITask);
     stateConstructor = container.build(IStateChange)
-    walrusBucketConstructor = container.build(IWalrusBucket);
-    sut = walrusBucketConstructor("team A's queue");
+    weamBucketConstructor = container.build(ITeamBucket);
+    sut = weamBucketConstructor("team A's queue");
   });
 
   describe('add', () => {
@@ -57,7 +57,7 @@ describe('walrus bucket should', () => {
     it('state "queued" to existing task when added and correctly get bucket name', () => {
       let task = taskConstructor('A task');
 
-      let sut = walrusBucketConstructor("Blue's Clues")
+      let sut = weamBucketConstructor("Blue's Clues")
       sut.add(task);
       let r = sut.getAllTasks();
 
@@ -105,7 +105,7 @@ describe('walrus bucket should', () => {
     });
 
     it('a new task with state of queued and correct bucket name', () => {
-      let sut = walrusBucketConstructor("Blue's Clues")
+      let sut = weamBucketConstructor("Blue's Clues")
       sut.addNew('B a new task', 'Small')
       let r = sut.getAllTasks();
 

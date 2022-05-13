@@ -3,7 +3,7 @@ import { Size } from "./generalTypes";
 import { ITask, TaskConstructor } from "./task";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "./taskFilter";
 
-export abstract class IWalrusBucket {
+export abstract class ITeamBucket {
   abstract readonly name: string;
   abstract getAllTasks(filter?: ITaskFilterCriteria): ITask[];
   abstract add(task: ITask): ITask;
@@ -13,10 +13,10 @@ export abstract class IWalrusBucket {
   abstract getNonActiveTasks(filter?: ITaskFilterCriteria): ITask[];
 }
 
-export type WalrusBucketConstructor = (name: string) => IWalrusBucket;
+export type TeamBucketConstructor = (name: string) => ITeamBucket;
 
 
-class WalrusBucket extends IWalrusBucket {
+class TeamBucket extends ITeamBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
   public readonly name: string;
@@ -59,8 +59,8 @@ class WalrusBucket extends IWalrusBucket {
   }
 }
 
-export function walrusBucketBuilder(factory: IContainer): WalrusBucketConstructor {
-  return function (name: string): IWalrusBucket {
-    return new WalrusBucket(name, factory.build(ITask), factory.build(ITaskFilter));
+export function weamBucketBuilder(factory: IContainer): TeamBucketConstructor {
+  return function (name: string): ITeamBucket {
+    return new TeamBucket(name, factory.build(ITask), factory.build(ITaskFilter));
   };
 }
