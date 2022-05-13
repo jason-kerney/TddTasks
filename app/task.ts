@@ -3,8 +3,8 @@ import { Activity, none, Size, Unsized } from "./generalTypes";
 import { IStateChange, StateChangeConstructor } from "./stateChange";
 
 export abstract class ITask {
-  abstract readonly name: string;
-  abstract readonly size: Size | Unsized;
+  abstract get name(): string;
+  abstract get size(): Size | Unsized;
   abstract get states(): IStateChange;
   abstract get activity(): Activity;
   abstract changeState(stateName: string, activity: Activity, activityDescriptor?: string) : void
