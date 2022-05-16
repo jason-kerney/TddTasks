@@ -120,8 +120,7 @@ export function clean<T>(value: T | None) : T {
 }
 
 export function fakeString(baseValue: string = '') : string {
-  let g = uuidv4();
-  return `${baseValue}${g}`;
+  return `${baseValue}${uuidv4()}`;
 }
 
 export function fakeActivity() : Activity {
