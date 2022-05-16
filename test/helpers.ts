@@ -1,7 +1,7 @@
 import { IContainer } from "@/container";
 import { Activity, none, None, Size } from "@/generalTypes";
 import { ITask, TaskConstructor } from "@/task";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 
 export function buildDateRangeBy(dateHelper: DateHelper, code: (helper: DateHelper) => void) : DateRange {
   let startDate = dateHelper.peekDate();
@@ -120,7 +120,7 @@ export function clean<T>(value: T | None) : T {
 }
 
 export function fakeString(baseValue: string = '') : string {
-  return `${baseValue}${uuidv4()}`;
+  return `${baseValue}${uuidV4()}`;
 }
 
 export function fakeActivity() : Activity {
