@@ -9,7 +9,8 @@ export abstract class ITask {
   abstract get activity(): Activity;
   abstract clearCallback(): void;
   abstract registerCallback(callback: (task: ITask) => void): void;
-  abstract changeState(stateName: string, activity: Activity, activityDescriptor?: string) : void
+  abstract changeState(stateName: string, activity: Activity, activityDescriptor?: string) : void;
+  abstract toString() : string;
 }
 
 export type TaskConstructor = (name: string, size?: Size, callback?: (task: ITask) => void) => ITask;
@@ -43,6 +44,15 @@ class Task extends ITask {
 
   get activity(): Activity {
     return this.states.activity;
+  }
+
+  toString(): string {
+    return `Task: ${this.name}
+\tSize: ${this.size}
+\tState: ${this.states.stateName}
+\tActivity: ${this.activity}
+\tModified Date: ${this.states.date}
+\tActivity Descriptor: ${this.states.activityDescriptor}`
   }
 
   constructor(name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor, callback?: (task: ITask) => void) {

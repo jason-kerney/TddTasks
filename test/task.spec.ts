@@ -48,6 +48,20 @@ describe('Task should', () => {
     expect(result.activity).to.equal(state.activity);
   });
 
+  it('toString with a given name', () => {
+    const result = builder('test task');
+
+    // expect(result.name).to.equal('test task');
+    // expect(result.size).to.equal('No Size')
+    // expect(result.states).to.not.equal(none);
+    expect(result.toString()).to.equal(`Task: ${result.name}
+\tSize: ${result.size}
+\tState: ${result.states.stateName}
+\tActivity: ${result.activity}
+\tModified Date: ${result.states.date}
+\tActivity Descriptor: ${result.states.activityDescriptor}`);
+  });
+
   it('report its creation', () => {
     let createdTask : ITask | undefined;
     let callback : (task: ITask) => void = (task: ITask) => {
