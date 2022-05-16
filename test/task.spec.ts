@@ -90,6 +90,24 @@ describe('Task should', () => {
     expect(task.activity).to.equal(state.activity);
   });
 
+  it('callback on a state change', () => {
+    let changedTask : ITask | undefined;
+    let cnt = 0;
+    let callback: (task: ITask) => void = (task: ITask) => {
+      cnt++;
+      if(cnt == 1) return;
+      changedTask = task;
+    }
+
+    const task = builder('new Item', undefined, callback);
+    task.changeState('ready', 'Active', 'ready is active because it means someone is working');
+
+    expect(changedTask).to.not.be.undefined;
+    expect(changedTask?.activity).to.equal('Active');
+    expect(changedTask?.states.activityDescriptor).to.equal('ready is active because it means someone is working');
+    expect(cnt).to.equal(2);
+  });
+
   it('know its current state initially', () => {
     const task = builder('new Item');
 

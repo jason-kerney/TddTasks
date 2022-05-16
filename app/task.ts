@@ -30,6 +30,8 @@ class Task extends ITask {
     return this.iStates;
   }
 
+  private callback: ((task: ITask) => void);
+
   get activity(): Activity {
     return this.states.activity;
   }
@@ -40,12 +42,19 @@ class Task extends ITask {
     this.iSize = size;
     this.stateBuilder = stateBuilder;
     this.iStates = stateBuilder('Created', 'Non-Active', none);
-    if (callback === undefined) return;
-    callback(this);
+    if(callback === undefined) {
+      this.callback = () => {};
+    }
+    else {
+      this.callback = callback;
+    }
+
+    this.callback(this);
   }
 
   changeState(stateName: string, activity: Activity, activityDescriptor: string = none) : void {
     this.iStates = this.stateBuilder(stateName, activity, activityDescriptor, this.states);
+    this.callback(this);
   }
 }
 
