@@ -108,8 +108,42 @@ describe('Task should', () => {
     expect(cnt).to.equal(2);
   });
 
+  it('allow callback to be set after cleared', () => {
+    let changedTask : ITask | undefined;
+    let cnt = 0;
+    let callback: (task: ITask) => void = (task: ITask) => {
+      cnt++;
+      if(cnt == 1) return;
+      changedTask = task;
+    }
 
-  it('callback can be cleared', () => {
+    const task = builder('new Item', undefined, callback);
+    task.clearCallback();
+    task.registerCallback(callback);
+    task.changeState('ready', 'Active', 'ready is active because it means someone is working');
+
+    expect(changedTask).to.not.be.undefined;
+    expect(changedTask?.activity).to.equal('Active');
+    expect(changedTask?.states.activityDescriptor).to.equal('ready is active because it means someone is working');
+    expect(cnt).to.equal(2);
+  });
+
+  it('allow callback to be set after creation', () => {
+    let changedTask : ITask | undefined;
+    let callback: (task: ITask) => void = (task: ITask) => {
+      changedTask = task;
+    }
+
+    const task = builder('new Item');
+    task.registerCallback(callback);
+    task.changeState('ready', 'Active', 'ready is active because it means someone is working');
+
+    expect(changedTask).to.not.be.undefined;
+    expect(changedTask?.activity).to.equal('Active');
+    expect(changedTask?.states.activityDescriptor).to.equal('ready is active because it means someone is working');
+  });
+
+  it('allow callback to be cleared', () => {
     let changedTask : ITask | undefined;
     let cnt = 0;
     let callback: (task: ITask) => void = (task: ITask) => {

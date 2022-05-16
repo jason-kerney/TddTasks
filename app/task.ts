@@ -8,6 +8,7 @@ export abstract class ITask {
   abstract get states(): IStateChange;
   abstract get activity(): Activity;
   abstract clearCallback(): void;
+  abstract registerCallback(callback: (task: ITask) => void): void;
   abstract changeState(stateName: string, activity: Activity, activityDescriptor?: string) : void
 }
 
@@ -34,6 +35,10 @@ class Task extends ITask {
   private callback: ((task: ITask) => void);
   clearCallback(): void {
    this.callback = () => {};
+  }
+
+  registerCallback(callback: (task: ITask) => void): void {
+    this.callback = callback;
   }
 
   get activity(): Activity {
