@@ -10,7 +10,7 @@ export abstract class ITask {
   abstract changeState(stateName: string, activity: Activity, activityDescriptor?: string) : void
 }
 
-export type TaskConstructor = (name: string, size?: Size) => ITask;
+export type TaskConstructor = (name: string, size?: Size, callback?: (task: ITask) => void) => ITask;
 
 class Task extends ITask {
   private stateBuilder: StateChangeConstructor;
@@ -34,12 +34,14 @@ class Task extends ITask {
     return this.states.activity;
   }
 
-  constructor(name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor) {
+  constructor(name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor, callback?: (task: ITask) => void) {
     super();
     this.iName = name;
     this.iSize = size;
     this.stateBuilder = stateBuilder;
     this.iStates = stateBuilder('Created', 'Non-Active', none);
+    if (callback === undefined) return;
+    callback(this);
   }
 
   changeState(stateName: string, activity: Activity, activityDescriptor: string = none) : void {
@@ -48,8 +50,8 @@ class Task extends ITask {
 }
 
 function builder(factory: IContainer): TaskConstructor {
-  return function (name: string, size: Size | Unsized = 'No Size'): ITask {
-    return new Task(name, size, factory.build(IStateChange));
+  return function (name: string, size: Size | Unsized = 'No Size', callback?: (task: ITask) => void): ITask {
+    return new Task(name, size, factory.build(IStateChange), callback);
   };
 }
 

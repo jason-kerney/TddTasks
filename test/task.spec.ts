@@ -48,6 +48,19 @@ describe('Task should', () => {
     expect(result.activity).to.equal(state.activity);
   });
 
+  it('report its creation', () => {
+    let createdTask : ITask | undefined;
+    let callback : (task: ITask) => void = (task: ITask) => {
+      createdTask = task;
+    }
+
+    builder('testing task callback', undefined, callback);
+
+    expect(createdTask).to.not.be.undefined;
+    expect(createdTask?.name).to.equal('testing task callback');
+    expect(createdTask?.size).to.equal('No Size')
+  });
+
   it('build a task with the different name', () => {
     const state =
       dateHelper.resetAfter(() =>
