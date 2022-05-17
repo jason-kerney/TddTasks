@@ -1,5 +1,6 @@
 import { IContainer } from "@/container";
 import { Activity, none, None, Size } from "@/generalTypes";
+import { IGuid } from "@/guid";
 import { INow } from "@/now";
 import { ITask, TaskConstructor } from "@/task";
 import { v4 as uuidV4 } from 'uuid';
@@ -57,8 +58,6 @@ export class DateRange {
   }
 }
 
-type NowGetter = () => INow;
-
 export class DateHelper {
   private date: Date;
   private readonly repeatDays: number;
@@ -115,6 +114,18 @@ export class DateHelper {
 
   peekDate(): Date {
     return new Date(this.date);
+  }
+}
+
+export class GuidHelper implements IGuid {
+  private callback: (() => string);
+
+  get(): string {
+    return this.callback();
+  }
+
+  constructor(callback: () => string) {
+    this.callback = callback;
   }
 }
 

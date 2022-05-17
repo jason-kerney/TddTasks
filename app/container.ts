@@ -5,6 +5,7 @@ import { MapType } from "./map";
 import { ITeamBucket, teamBucketBuilder } from "./teamBucket";
 import { ITaskFilter, taskFilterBuilder } from "./taskFilter";
 import { INow, nowBuilder } from "./now";
+import { guidBuilder, IGuid } from "./guid";
 
 export type Builder<T> = (...parameters: any) => T;
 export type Factory<T> = (factory: IContainer) => Builder<T>
@@ -33,7 +34,8 @@ class Container extends IContainer {
     this.map[IStateChange.name] = stateChangeBuilder;
     this.map[ITask.name] = taskBuilder;
     this.map[ITeamBucket.name] = teamBucketBuilder;
-    this.map[ITaskFilter.name] = taskFilterBuilder
+    this.map[ITaskFilter.name] = taskFilterBuilder;
+    this.map[IGuid.name] = guidBuilder;
   }
 
   register<T>(type: abstract new(...parameters: any) => T, factory: Factory<T>) {
