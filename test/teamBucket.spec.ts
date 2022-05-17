@@ -155,10 +155,36 @@ describe('Team Bucket should', () => {
 
   it('getActiveTasks', () => {
     const expected: ITaskFilterCriteria = { activity: 'Active' };
+
+    let task = sut.addNew(fakeString(), fakeSize());
+    task.changeState('becoming active', 'Active');
     let r = sut.getActiveTasks();
 
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
+    expect(receivedTasks).to.not.be.undefined;
+    if(receivedTasks === undefined) return;
+    expect(receivedTasks).to.have.lengthOf(1);
+    expect(receivedTasks[0]).to.deep.equal(task);
+  });
+
+  it('getActiveTasks when some tasks are non active', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Active' };
+
+    let activeTask = sut.addNew(fakeString(), fakeSize());
+    activeTask.changeState('becoming active', 'Active');
+
+    let otherTask = sut.addNew(fakeString(), fakeSize());
+
+    let r = sut.getActiveTasks();
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+    expect(receivedTasks).to.not.be.undefined;
+    if(receivedTasks === undefined) return;
+    expect(receivedTasks).to.have.lengthOf(1);
+    expect(receivedTasks).to.contain(activeTask);
+    expect(receivedTasks).to.not.contain(otherTask);
   });
 
   it('getActiveTasks with criteria', () => {
