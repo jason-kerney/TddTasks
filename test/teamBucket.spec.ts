@@ -1,7 +1,7 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { ITeamBucket, TeamBucketConstructor } from "@/teamBucket";
-import { addNRandomTasks, DateHelper } from "./helpers";
+import { addNRandomTasks, DateHelper, fakeSize, fakeString } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "@/taskFilter";
 import { ITask, TaskConstructor } from "@/task";
 
@@ -80,7 +80,7 @@ describe('Team Bucket should', () => {
     expect(receivedTasks).to.have.lengthOf(0);
   });
 
-  it('getAllTasks filtered tasks with empty criteria', () => {
+  it('have no tasks when created and getAllTasks filtered tasks with empty criteria', () => {
     sut.getAllTasks();
 
     expect(filterCriteria).to.not.be.undefined;
@@ -88,11 +88,19 @@ describe('Team Bucket should', () => {
 
   it('getAllTasks filtered by specified criteria', () => {
     const expected: ITaskFilterCriteria = { activity: 'Active' };
+    let name = fakeString();
+    let size = fakeSize();
+    sut.addNew(name, size);
 
     let r = sut.getAllTasks(expected);
 
     expect(filterCriteria).to.equal(expected);
     expect(r).to.equal(expectedTasks);
+    expect(receivedTasks).to.have.lengthOf(1);
+    expect(receivedTasks).to.not.be.undefined;
+    if(receivedTasks === undefined) return;
+    expect(receivedTasks[0].name).to.equal(name);
+    expect(receivedTasks[0].size).to.equal(size);
   });
 
   it('getCompleteTasks', () => {
