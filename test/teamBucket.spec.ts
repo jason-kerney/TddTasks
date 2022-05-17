@@ -105,10 +105,36 @@ describe('Team Bucket should', () => {
 
   it('getCompleteTasks', () => {
     const expected: ITaskFilterCriteria = { activity: 'Closed' };
+    let task = sut.addNew(fakeString(), fakeSize());
+    task.changeState('changed', 'Closed');
+
     let r = sut.getCompleteTasks();
 
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
+    expect(receivedTasks).to.not.be.undefined;
+    if (receivedTasks === undefined) return;
+    expect(receivedTasks).to.have.lengthOf(1);
+    expect(receivedTasks[0]).to.deep.equal(task);
+  });
+
+  it('getCompleteTasks when some are not completed', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Closed' };
+
+    let completedTask = sut.addNew(fakeString(), fakeSize());
+    completedTask.changeState('changed', 'Closed');
+
+    let otherTask = sut.addNew(fakeString(), fakeSize());
+
+    let r = sut.getCompleteTasks();
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+    expect(receivedTasks).to.not.be.undefined;
+    if(expectedTasks === undefined) return;
+    expect(receivedTasks).to.have.lengthOf(1);
+    expect(receivedTasks).to.contain(completedTask);
+    expect(receivedTasks).to.not.contain(otherTask);
   });
 
   it('getCompleteTasks with criteria', () => {
