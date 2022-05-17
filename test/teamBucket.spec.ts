@@ -4,6 +4,7 @@ import { ITeamBucket, TeamBucketConstructor } from "@/teamBucket";
 import { addNRandomTasks, DateHelper, fakeSize, fakeString } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "@/taskFilter";
 import { ITask, TaskConstructor } from "@/task";
+import { IWriter } from "@/outputWritter";
 
 class FakeFilter implements ITaskFilter {
   private callback: () => ITask[];
@@ -38,6 +39,7 @@ describe('Team Bucket should', () => {
   let filterCriteria: ITaskFilterCriteria | undefined;
   let expectedTasks: ITask[];
   let receivedTasks: ITask[] | undefined;
+  let writer: IWriter;
 
   beforeEach(() => {
     expectedTasks = [];
@@ -45,11 +47,15 @@ describe('Team Bucket should', () => {
     filterCriteria = undefined;
 
     container = getContainer();
+    writer = container.build(IWriter)();
+
     container.register(ITaskFilter, (_f) => fakeFilterBuilder((tasks, filter) => {
       filterCriteria = filter;
       receivedTasks = tasks;
       return expectedTasks;
     }));
+
+    container.register(IWriter, () => () => writer);
 
     let dateHelper = new DateHelper();
     dateHelper.registerWith(container);
@@ -98,7 +104,7 @@ describe('Team Bucket should', () => {
     expect(r).to.equal(expectedTasks);
     expect(receivedTasks).to.have.lengthOf(1);
     expect(receivedTasks).to.not.be.undefined;
-    if(receivedTasks === undefined) return;
+    if (receivedTasks === undefined) return;
     expect(receivedTasks[0].name).to.equal(name);
     expect(receivedTasks[0].size).to.equal(size);
   });
@@ -131,7 +137,7 @@ describe('Team Bucket should', () => {
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
     expect(receivedTasks).to.not.be.undefined;
-    if(expectedTasks === undefined) return;
+    if (expectedTasks === undefined) return;
     expect(receivedTasks).to.have.lengthOf(1);
     expect(receivedTasks).to.contain(completedTask);
     expect(receivedTasks).to.not.contain(otherTask);
@@ -163,7 +169,7 @@ describe('Team Bucket should', () => {
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
     expect(receivedTasks).to.not.be.undefined;
-    if(receivedTasks === undefined) return;
+    if (receivedTasks === undefined) return;
     expect(receivedTasks).to.have.lengthOf(1);
     expect(receivedTasks[0]).to.deep.equal(task);
   });
@@ -181,7 +187,7 @@ describe('Team Bucket should', () => {
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
     expect(receivedTasks).to.not.be.undefined;
-    if(receivedTasks === undefined) return;
+    if (receivedTasks === undefined) return;
     expect(receivedTasks).to.have.lengthOf(1);
     expect(receivedTasks).to.contain(activeTask);
     expect(receivedTasks).to.not.contain(otherTask);
@@ -205,10 +211,34 @@ describe('Team Bucket should', () => {
 
   it('getNonActiveTasks', () => {
     const expected: ITaskFilterCriteria = { activity: 'Non-Active' };
+    let task = sut.addNew(fakeString(), fakeSize());
+
     let r = sut.getNonActiveTasks();
 
     expect(filterCriteria).to.deep.equal(expected);
     expect(r).to.equal(expectedTasks);
+    expect(receivedTasks).to.not.be.undefined;
+    if (receivedTasks === undefined) return;
+    expect(receivedTasks).to.have.lengthOf(1);
+    expect(receivedTasks[0]).to.deep.equal(task);
+  });
+
+  it('getNonActiveTasks when there are active tasks', () => {
+    const expected: ITaskFilterCriteria = { activity: 'Non-Active' };
+
+    let nonActiveTask = writer.increaseIndent(() => sut.addNew(fakeString(), fakeSize()));
+    let activeTask = sut.addNew(fakeString(), fakeSize());
+    activeTask.changeState('become active', 'Active');
+
+    let r = sut.getNonActiveTasks();
+
+    expect(filterCriteria).to.deep.equal(expected);
+    expect(r).to.equal(expectedTasks);
+    expect(receivedTasks).to.not.be.undefined;
+    if (receivedTasks === undefined) return;
+    expect(receivedTasks).to.have.lengthOf(1);
+    expect(receivedTasks).to.contain(nonActiveTask);
+    expect(receivedTasks).to.not.contain(activeTask);
   });
 
   it('getNonActiveTasks with criteria', () => {
