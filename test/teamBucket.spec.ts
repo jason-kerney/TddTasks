@@ -110,7 +110,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getCompleteTasks', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Closed' };
+    const expected: ITaskFilterCriteria = { };
     let task = sut.addNew(fakeString(), fakeSize());
     task.changeState('changed', 'Closed');
 
@@ -125,7 +125,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getCompleteTasks when some are not completed', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Closed' };
+    const expected: ITaskFilterCriteria = { };
 
     let completedTask = sut.addNew(fakeString(), fakeSize());
     completedTask.changeState('changed', 'Closed');
@@ -144,7 +144,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getCompleteTasks with criteria', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Closed', dateGraterThen: new Date('01-JAN-2021') };
+    const expected: ITaskFilterCriteria = { dateGraterThen: new Date('01-JAN-2021') };
     let r = sut.getCompleteTasks({ dateGraterThen: new Date('01-JAN-2021') });
 
     expect(filterCriteria).to.deep.equal(expected);
@@ -152,7 +152,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getCompleteTasks with wrong activity', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Closed' };
+    const expected: ITaskFilterCriteria = { };
     let r = sut.getCompleteTasks({ activity: 'Active' });
 
     expect(filterCriteria).to.deep.equal(expected);

@@ -97,7 +97,7 @@ class TeamBucket extends ITeamBucket {
   }
 
   getCompleteTasks(filter: ITaskFilterCriteria = {}): ITask[] {
-    filter.activity = 'Closed';
+    delete filter.activity;
     return this.getFilteredTasks(this.closed.tasks, filter);
   }
 
