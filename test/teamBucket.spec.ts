@@ -1,7 +1,7 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
 import { ITeamBucket, TeamBucketConstructor } from "@/teamBucket";
-import { addNRandomTasks, DateHelper, fakeSize, fakeString } from "./helpers";
+import { addNRandomTasks, cleanFakeSize, DateHelper, fakeSize, fakeString } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "@/taskFilter";
 import { ITask, TaskConstructor } from "@/task";
 import { IWriter } from "@/outputWritter";
@@ -106,7 +106,7 @@ describe('Team Bucket should', () => {
     expect(receivedTasks).to.not.be.undefined;
     if (receivedTasks === undefined) return;
     expect(receivedTasks[0].name).to.equal(name);
-    expect(receivedTasks[0].size).to.equal(size);
+    expect(receivedTasks[0].size).to.equal(cleanFakeSize(size));
   });
 
   it('getCompleteTasks', () => {
@@ -210,7 +210,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getNonActiveTasks', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Non-Active' };
+    const expected: ITaskFilterCriteria = { };
     let task = sut.addNew(fakeString(), fakeSize());
 
     let r = sut.getNonActiveTasks();
@@ -224,7 +224,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getNonActiveTasks when there are active tasks', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Non-Active' };
+    const expected: ITaskFilterCriteria = { };
 
     let nonActiveTask = writer.increaseIndent(() => sut.addNew(fakeString(), fakeSize()));
     let activeTask = sut.addNew(fakeString(), fakeSize());
@@ -242,7 +242,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getNonActiveTasks with criteria', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Non-Active', dateGraterThen: new Date('01-JAN-2021') };
+    const expected: ITaskFilterCriteria = { dateGraterThen: new Date('01-JAN-2021') };
     let r = sut.getNonActiveTasks({ dateGraterThen: new Date('01-JAN-2021') });
 
     expect(filterCriteria).to.deep.equal(expected);
@@ -250,7 +250,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getNonActiveTasks with wrong activity', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Non-Active' };
+    const expected: ITaskFilterCriteria = { };
     let r = sut.getNonActiveTasks({ activity: 'Closed' });
 
     expect(filterCriteria).to.deep.equal(expected);

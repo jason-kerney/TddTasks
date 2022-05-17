@@ -1,5 +1,5 @@
 import { IContainer } from "@/container";
-import { Activity, none, None, Size } from "@/generalTypes";
+import { Activity, none, None, Size, Unsized } from "@/generalTypes";
 import { IGuid } from "@/guid";
 import { INow } from "@/now";
 import { ITask, TaskConstructor } from "@/task";
@@ -183,6 +183,10 @@ export function fakeSize(): Size | undefined {
   }
 
   return 'Tiny';
+}
+
+export function cleanFakeSize(size: Size | undefined): Size | Unsized {
+  return size ?? 'No Size';
 }
 
 export function setupRandomEnvironment(container: IContainer, range: DateRange): DateHelper {

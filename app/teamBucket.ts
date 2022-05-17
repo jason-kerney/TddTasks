@@ -107,7 +107,7 @@ class TeamBucket extends ITeamBucket {
   }
 
   getNonActiveTasks(filter: ITaskFilterCriteria = {}): ITask[] {
-    filter.activity = 'Non-Active';
+    delete filter.activity;
     return this.getFilteredTasks(this.nonActive.tasks, filter);
   }
 }
