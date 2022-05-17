@@ -160,7 +160,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getActiveTasks', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Active' };
+    const expected: ITaskFilterCriteria = { };
 
     let task = sut.addNew(fakeString(), fakeSize());
     task.changeState('becoming active', 'Active');
@@ -175,7 +175,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getActiveTasks when some tasks are non active', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Active' };
+    const expected: ITaskFilterCriteria = { };
 
     let activeTask = sut.addNew(fakeString(), fakeSize());
     activeTask.changeState('becoming active', 'Active');
@@ -194,7 +194,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getActiveTasks with criteria', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Active', dateGraterThen: new Date('01-JAN-2021') };
+    const expected: ITaskFilterCriteria = { dateGraterThen: new Date('01-JAN-2021') };
     let r = sut.getActiveTasks({ dateGraterThen: new Date('01-JAN-2021') });
 
     expect(filterCriteria).to.deep.equal(expected);
@@ -202,7 +202,7 @@ describe('Team Bucket should', () => {
   });
 
   it('getActiveTasks with wrong activity', () => {
-    const expected: ITaskFilterCriteria = { activity: 'Active' };
+    const expected: ITaskFilterCriteria = { };
     let r = sut.getActiveTasks({ activity: 'Non-Active' });
 
     expect(filterCriteria).to.deep.equal(expected);
