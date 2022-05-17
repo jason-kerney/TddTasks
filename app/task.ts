@@ -1,8 +1,10 @@
 import { IContainer } from "./container";
 import { Activity, none, Size, Unsized } from "./generalTypes";
+import { IGuid } from "./guid";
 import { IStateChange, StateChangeConstructor } from "./stateChange";
 
 export abstract class ITask {
+  abstract get key(): string;
   abstract get name(): string;
   abstract get size(): Size | Unsized;
   abstract get states(): IStateChange;
@@ -17,6 +19,11 @@ export type TaskConstructor = (name: string, size?: Size, callback?: (task: ITas
 
 class Task extends ITask {
   private stateBuilder: StateChangeConstructor;
+
+  private readonly iKey: string;
+  get key(): string {
+    return this.iKey;
+  }
 
   private readonly iName: string;
   get name(): string {
@@ -55,8 +62,9 @@ class Task extends ITask {
 \tActivity Descriptor: ${this.states.activityDescriptor}`
   }
 
-  constructor(name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor, callback?: (task: ITask) => void) {
+  constructor(key: string, name: string, size: Size | Unsized, stateBuilder: StateChangeConstructor, callback?: (task: ITask) => void) {
     super();
+    this.iKey = key;
     this.iName = name;
     this.iSize = size;
     this.stateBuilder = stateBuilder;
@@ -79,7 +87,8 @@ class Task extends ITask {
 
 function builder(factory: IContainer): TaskConstructor {
   return function (name: string, size: Size | Unsized = 'No Size', callback?: (task: ITask) => void): ITask {
-    return new Task(name, size, factory.build(IStateChange), callback);
+    let guid = factory.build(IGuid)();
+    return new Task(guid.get(), name, size, factory.build(IStateChange), callback);
   };
 }
 

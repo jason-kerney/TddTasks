@@ -1,9 +1,10 @@
 import { getContainer, IContainer } from "@/container";
 import { none } from "@/generalTypes";
+import { IGuid } from "@/guid";
 import { IStateChange, StateChangeConstructor } from "@/stateChange";
 import { ITask, TaskConstructor } from "@/task";
 import { expect } from "chai";
-import { clean, DateHelper } from "./helpers";
+import { clean, DateHelper, GuidHelper } from "./helpers";
 
 describe('Task should', () => {
   let container: IContainer;
@@ -11,11 +12,39 @@ describe('Task should', () => {
   let builder: TaskConstructor;
   let stateBuilder: StateChangeConstructor;
   let initialState: IStateChange;
+  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  let letterPtrs: number[] = [0, 0, 0];
 
   beforeEach(() => {
+    letterPtrs = [0, 0, 0];
+
     container = getContainer();
     dateHelper = new DateHelper();
     dateHelper.registerWith(container);
+    let guidHelper = new GuidHelper(() => {
+      let a = letters[letterPtrs[0]];
+      let b = letters[letterPtrs[1]];
+      let c = letters[letterPtrs[2]];
+
+      letterPtrs[0]++;
+      if(letters.length <= letterPtrs[0]) {
+        letterPtrs[0] = 0
+        letterPtrs[1]++;
+      }
+
+      if(letters.length <= letterPtrs[1]) {
+        letterPtrs[1] = 0;
+        letterPtrs[2]++;
+      }
+
+      if(letters.length <= letterPtrs[2]) {
+        letterPtrs[2] = 0;
+      }
+
+      return `${a}${b}${c}`;
+    });
+
+    container.register(IGuid, () => () => guidHelper);
 
     stateBuilder = container.build(IStateChange) as StateChangeConstructor;
 
@@ -46,6 +75,12 @@ describe('Task should', () => {
     expect(result.states).to.not.equal(none);
     expect(result.states).to.deep.equal(state);
     expect(result.activity).to.equal(state.activity);
+  });
+
+  it('build a task with guid as key', () => {
+    const result = builder('test task');
+
+    expect(result.key).to.equal('aaa');
   });
 
   it('toString with a given name', () => {
