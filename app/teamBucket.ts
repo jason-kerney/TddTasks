@@ -1,7 +1,6 @@
 import { IContainer } from "@/container";
 import { Size } from "./generalTypes";
 import { MapType } from "./map";
-import { IWriter } from "./outputWritter";
 import { ITask, TaskConstructor } from "./task";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "./taskFilter";
 
@@ -30,8 +29,6 @@ class TeamBucket extends ITeamBucket {
   private readonly nonActive: IQueue = { name: 'non-active', tasks: [] };
   private readonly closed: IQueue = { name: 'closed', tasks: [] };
   private readonly currentQueue: MapType<IQueue> = {};
-  private readonly factory: IContainer;
-  private readonly writer: IWriter;
 
   private readonly iName: string;
   get name(): string {
@@ -40,11 +37,9 @@ class TeamBucket extends ITeamBucket {
 
   constructor(name: string, taskBuilder: TaskConstructor, factory: IContainer) {
     super();
-    this.factory = factory;
     this.taskBuilder = taskBuilder;
     this.iName = name;
     this.taskFilterBuilder = factory.build(ITaskFilter);
-    this.writer = factory.build(IWriter)();
   }
 
   private setToQueue(task: ITask, queue: IQueue): IQueue {
@@ -58,22 +53,16 @@ class TeamBucket extends ITeamBucket {
   }
 
   private getQueue(task: ITask): IQueue {
-    return this.writer.increaseIndent(() => {
-      let queue = this.currentQueue[task.key];
-      if (queue !== undefined) {
-        this.writer.write(`found ${queue?.name}`);
-        return queue;
-      }
+    let queue = this.currentQueue[task.key];
+    if (queue !== undefined) {
+      return queue;
+    }
 
-      this.writer.write('searching Active');
-      if (task.activity === 'Active') return this.setToQueue(task, this.active);
+    if (task.activity === 'Active') return this.setToQueue(task, this.active);
 
-      this.writer.write('searching Non-Active');
-      if (task.activity === 'Non-Active') return this.setToQueue(task, this.nonActive);
+    if (task.activity === 'Non-Active') return this.setToQueue(task, this.nonActive);
 
-      this.writer.write('searching closed');
-      return this.setToQueue(task, this.closed);
-    });
+    return this.setToQueue(task, this.closed);
   }
 
   private buildTaskCallback(th: TeamBucket): (task: ITask) => void {
