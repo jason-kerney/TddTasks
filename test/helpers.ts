@@ -1,9 +1,10 @@
 import { IContainer } from "@/container";
 import { Activity, none, None, Size } from "@/generalTypes";
+import { INow } from "@/now";
 import { ITask, TaskConstructor } from "@/task";
 import { v4 as uuidV4 } from 'uuid';
 
-export function buildDateRangeBy(dateHelper: DateHelper, code: (helper: DateHelper) => void) : DateRange {
+export function buildDateRangeBy(dateHelper: DateHelper, code: (helper: DateHelper) => void): DateRange {
   let startDate = dateHelper.peekDate();
   code(dateHelper);
   let endDate = dateHelper.peekDate();
@@ -15,7 +16,7 @@ export class DateRange {
   private readonly start: number;
   private readonly end: number;
   constructor(start: Date | number, end: Date | number) {
-    if(end < start) {
+    if (end < start) {
       throw new Error(`Expected "${start}" <= "${end}"`);
     }
 
@@ -34,7 +35,7 @@ export class DateRange {
     }
   }
 
-  getRandom() : Date {
+  getRandom(): Date {
     const msInDay = 24 * 60 * 60 * 1000
     let sDate = new Date(this.start);
 
@@ -47,14 +48,16 @@ export class DateRange {
     return sDate;
   }
 
-  getStart() : Date {
+  getStart(): Date {
     return new Date(this.start);
   }
 
-  getEnd() : Date {
+  getEnd(): Date {
     return new Date(this.end);
   }
 }
+
+type NowGetter = () => INow;
 
 export class DateHelper {
   private date: Date;
@@ -70,21 +73,25 @@ export class DateHelper {
     this.date = new Date(date);
   }
 
-  getDate(): () => Date {
+  getDate(): (() => INow) {
     let th = this;
-    return function () {
-      th.repeatCnt++;
-      let r = new Date(th.date);
-      if(th.repeatDays <= th.repeatCnt){
-        th.date.setDate(th.date.getDate() + 1);
-      }
-      return r;
+    return () => {
+      return {
+        now: () => {
+          th.repeatCnt++;
+          let r = new Date(th.date);
+          if (th.repeatDays <= th.repeatCnt) {
+            th.date.setDate(th.date.getDate() + 1);
+          }
+          return r;
+        }
+      };
     };
   }
 
   registerWith(container: IContainer) {
     let th = this;
-    container.register(Date, () => th.getDate());
+    container.register(INow, () => th.getDate());
   }
 
   private holdDate() {
@@ -111,26 +118,26 @@ export class DateHelper {
   }
 }
 
-export function clean<T>(value: T | None) : T {
-  if(value === none) {
+export function clean<T>(value: T | None): T {
+  if (value === none) {
     throw new Error("not a valid value");
   }
 
   return value;
 }
 
-export function fakeString(baseValue: string = '') : string {
+export function fakeString(baseValue: string = ''): string {
   return `${baseValue}${uuidV4()}`;
 }
 
-export function fakeActivity() : Activity {
+export function fakeActivity(): Activity {
   let r = (Math.random() * 100) % 3;
 
   if (-1 < r && r < 1) {
     return 'Active';
   }
 
-  if(0 < r && r < 2) {
+  if (0 < r && r < 2) {
     return 'Non-Active';
   }
 
@@ -184,7 +191,7 @@ export function addRandomTasks(tasks: ITask[], taskBuilder: TaskConstructor, act
   tasks.push(task);
 }
 
-export function addNRandomTasks(tasks: ITask[], taskBuilder: TaskConstructor, n : number, activity?: Activity) {
+export function addNRandomTasks(tasks: ITask[], taskBuilder: TaskConstructor, n: number, activity?: Activity) {
   for (let index = 0; index < n; index++) {
     addRandomTasks(tasks, taskBuilder, activity)
   }

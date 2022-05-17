@@ -1,5 +1,6 @@
 import { Activity, none, None } from "./generalTypes";
-import { Factory, IContainer } from "./container"
+import { IContainer } from "./container"
+import { INow } from "./now";
 
 export type StateChangeConstructor = (stateName: string, activity: Activity, activityDescriptor: string | None, previous?: IStateChange) => IStateChange
 
@@ -73,9 +74,9 @@ class StateChange extends IStateChange {
 export const stateChangeBuilder =
   function (factory: IContainer) {
     const ctor: StateChangeConstructor = (name: string, activity: Activity, activityDescriptor: string | None, previous: IStateChange | None = none) => {
-      const date = factory.build(Date)();
+      const date = factory.build(INow)();
 
-      return new StateChange(name, activity, activityDescriptor, date, previous);
+      return new StateChange(name, activity, activityDescriptor, date.now(), previous);
     };
 
     return ctor;

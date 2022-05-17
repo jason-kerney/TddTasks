@@ -4,6 +4,7 @@ import { none, None } from "./generalTypes";
 import { MapType } from "./map";
 import { ITeamBucket, teamBucketBuilder } from "./teamBucket";
 import { ITaskFilter, taskFilterBuilder } from "./taskFilter";
+import { INow, nowBuilder } from "./now";
 
 export type Builder<T> = (...parameters: any) => T;
 export type Factory<T> = (factory: IContainer) => Builder<T>
@@ -28,7 +29,7 @@ class Container extends IContainer {
 
   constructor() {
     super();
-    this.map[Date.name] = (_factory) => () => { return new Date(Date.now()) };
+    this.map[INow.name] = nowBuilder;
     this.map[IStateChange.name] = stateChangeBuilder;
     this.map[ITask.name] = taskBuilder;
     this.map[ITeamBucket.name] = teamBucketBuilder;
