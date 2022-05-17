@@ -71,12 +71,8 @@ class TeamBucket extends ITeamBucket {
     }
   }
 
-  private getFilteredTasks(tasks: ITask[], filter: ITaskFilterCriteria = {}): ITask[] {
-    return this.taskFilterBuilder(tasks, filter).getResults()
-  }
-
-  getAllTasks(filter?: ITaskFilterCriteria): ITask[] {
-    return this.getFilteredTasks(this.tasks, filter)
+  getAllTasks(filter: ITaskFilterCriteria = {}): ITask[] {
+    return this.taskFilterBuilder(this.tasks, filter).getResults();
   }
 
   add(task: ITask): ITask {
@@ -92,17 +88,17 @@ class TeamBucket extends ITeamBucket {
 
   getCompleteTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     filter.activity = 'Closed';
-    return this.getFilteredTasks(this.closed, filter);
+    return this.getAllTasks(filter);
   }
 
   getActiveTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     filter.activity = 'Active';
-    return this.getFilteredTasks(this.active, filter);
+    return this.getAllTasks(filter);
   }
 
   getNonActiveTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     filter.activity = 'Non-Active';
-    return this.getFilteredTasks(this.nonActive, filter);
+    return this.getAllTasks(filter);
   }
 }
 
