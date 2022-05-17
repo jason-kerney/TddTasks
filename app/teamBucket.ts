@@ -1,6 +1,7 @@
 import { IContainer } from "@/container";
 import { Size } from "./generalTypes";
 import { MapType } from "./map";
+import { IWriter } from "./outputWritter";
 import { ITask, TaskConstructor } from "./task";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "./taskFilter";
 
@@ -16,56 +17,72 @@ export abstract class ITeamBucket {
 
 export type TeamBucketConstructor = (name: string) => ITeamBucket;
 
+interface IQueue {
+  get name(): string;
+  tasks: ITask[];
+}
+
 class TeamBucket extends ITeamBucket {
   private tasks: ITask[] = [];
   private taskBuilder: TaskConstructor;
   private readonly taskFilterBuilder: TaskFilterConstructor;
-  private readonly active: ITask[] = [];
-  private readonly nonActive: ITask[] = [];
-  private readonly closed: ITask[] = [];
-  private readonly currentQueue: MapType<ITask[]> = {};
+  private readonly active: IQueue = { name: 'active', tasks: [] };
+  private readonly nonActive: IQueue = { name: 'non-active', tasks: [] };
+  private readonly closed: IQueue = { name: 'closed', tasks: [] };
+  private readonly currentQueue: MapType<IQueue> = {};
+  private readonly factory: IContainer;
+  private readonly writer: IWriter;
 
   private readonly iName: string;
   get name(): string {
     return this.iName;
   }
 
-  constructor(name: string, taskBuilder: TaskConstructor, taskFilterBuilder: TaskFilterConstructor) {
+  constructor(name: string, taskBuilder: TaskConstructor, factory: IContainer) {
     super();
+    this.factory = factory;
     this.taskBuilder = taskBuilder;
     this.iName = name;
-    this.taskFilterBuilder = taskFilterBuilder;
+    this.taskFilterBuilder = factory.build(ITaskFilter);
+    this.writer = factory.build(IWriter)();
   }
 
-  private getQueue(task: ITask): ITask[] {
-    if (this.currentQueue[task.key] !== undefined) {
-      return this.currentQueue[task.key] as ITask[];
+  private setToQueue(task: ITask, queue: IQueue): IQueue {
+    let th: TeamBucket = this;
+    if (!queue.tasks.includes(task)) {
+      queue.tasks.push(task);
     }
 
-    if (task.activity === 'Active') {
-      this.active.push(task);
-      this.currentQueue[task.key] = this.active;
-      return this.active
-    };
+    th.currentQueue[task.key] = queue;
+    return queue;
+  }
 
-    if (task.activity === 'Non-Active') {
-      this.nonActive.push(task);
-      this.currentQueue[task.key] = this.nonActive;
-      return this.nonActive;
-    };
+  private getQueue(task: ITask): IQueue {
+    return this.writer.increaseIndent(() => {
+      let queue = this.currentQueue[task.key];
+      if (queue !== undefined) {
+        this.writer.write(`found ${queue?.name}`);
+        return queue;
+      }
 
-    this.closed.push(task);
-    this.currentQueue[task.key] = this.closed;
-    return this.closed;
+      this.writer.write('searching Active');
+      if (task.activity === 'Active') return this.setToQueue(task, this.active);
+
+      this.writer.write('searching Non-Active');
+      if (task.activity === 'Non-Active') return this.setToQueue(task, this.nonActive);
+
+      this.writer.write('searching closed');
+      return this.setToQueue(task, this.closed);
+    });
   }
 
   private buildTaskCallback(th: TeamBucket): (task: ITask) => void {
     return function (task: ITask): void {
       let queue = th.getQueue(task);
-      let index = queue.indexOf(task);
+      let index = queue.tasks.indexOf(task);
 
       delete th.currentQueue[task.key];
-      queue.splice(index + 1, 1);
+      queue.tasks.splice(index, 1);
 
       th.getQueue(task);
     }
@@ -92,22 +109,22 @@ class TeamBucket extends ITeamBucket {
 
   getCompleteTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     filter.activity = 'Closed';
-    return this.getFilteredTasks(this.closed, filter);
+    return this.getFilteredTasks(this.closed.tasks, filter);
   }
 
   getActiveTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     filter.activity = 'Active';
-    return this.getFilteredTasks(this.active, filter);
+    return this.getFilteredTasks(this.active.tasks, filter);
   }
 
   getNonActiveTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     filter.activity = 'Non-Active';
-    return this.getFilteredTasks(this.nonActive, filter);
+    return this.getFilteredTasks(this.nonActive.tasks, filter);
   }
 }
 
 export function teamBucketBuilder(factory: IContainer): TeamBucketConstructor {
   return function (name: string): ITeamBucket {
-    return new TeamBucket(name, factory.build(ITask), factory.build(ITaskFilter));
+    return new TeamBucket(name, factory.build(ITask), factory);
   };
 }
