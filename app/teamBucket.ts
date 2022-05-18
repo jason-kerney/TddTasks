@@ -12,6 +12,7 @@ export abstract class ITeamBucket {
   abstract getCompleteTasks(filter?: ITaskFilterCriteria): ITask[];
   abstract getActiveTasks(filter?: ITaskFilterCriteria): ITask[];
   abstract getNonActiveTasks(filter?: ITaskFilterCriteria): ITask[];
+  abstract getPriority(task: ITask) : number;
 }
 
 export type TeamBucketConstructor = (name: string) => ITeamBucket;
@@ -109,6 +110,10 @@ class TeamBucket extends ITeamBucket {
   getNonActiveTasks(filter: ITaskFilterCriteria = {}): ITask[] {
     delete filter.activity;
     return this.getFilteredTasks(this.nonActive.tasks, filter);
+  }
+
+  getPriority(task: ITask): number {
+    return this.nonActive.tasks.indexOf(task) + 1;
   }
 }
 
