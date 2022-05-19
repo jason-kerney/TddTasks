@@ -55,7 +55,7 @@ describe('OutputWriter', () => {
       expect(recMessages[0], 'message').to.equal(msg);
     });
 
-    it.only('writes parameters to console', () => {
+    it('writes parameters to console', () => {
       let msg = fakeString();
       let param = getRandomNOfRandomThings(container);
       sut.write(msg, ...param);
