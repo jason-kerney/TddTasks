@@ -35,5 +35,14 @@ describe('OutputWriter should', () => {
     let w2: IWriter = container.build(IWriter)();
     expect(w2).to.equal(sut);
   });
+
+  it('write nothing to console', () => {
+    sut.write();
+
+    expect(recMessages).to.have.lengthOf(1);
+    expect(recMessages[0], 'message').to.equal('');
+    expect(recParameters).to.have.lengthOf(1);
+    expect(recParameters[0], 'parameters').to.have.lengthOf(0);
+  });
 });
 
