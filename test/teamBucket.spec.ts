@@ -39,7 +39,6 @@ describe('Team Bucket should', () => {
   let filterCriteria: ITaskFilterCriteria | undefined;
   let expectedTasks: ITask[];
   let receivedTasks: ITask[] | undefined;
-  let writer: IWriter;
 
   beforeEach(() => {
     expectedTasks = [];
@@ -47,15 +46,12 @@ describe('Team Bucket should', () => {
     filterCriteria = undefined;
 
     container = getContainer();
-    writer = container.build(IWriter)();
 
     container.register(ITaskFilter, (_f) => fakeFilterBuilder((tasks, filter) => {
       filterCriteria = filter;
       receivedTasks = tasks;
       return expectedTasks;
     }));
-
-    container.register(IWriter, () => () => writer);
 
     let dateHelper = new DateHelper();
     dateHelper.registerWith(container);
@@ -226,7 +222,7 @@ describe('Team Bucket should', () => {
   it('getNonActiveTasks when there are active tasks', () => {
     const expected: ITaskFilterCriteria = { };
 
-    let nonActiveTask = writer.increaseIndent(() => sut.addNew(fakeString(), fakeSize()));
+    let nonActiveTask = sut.addNew(fakeString(), fakeSize());
     let activeTask = sut.addNew(fakeString(), fakeSize());
     activeTask.changeState('become active', 'Active');
 
