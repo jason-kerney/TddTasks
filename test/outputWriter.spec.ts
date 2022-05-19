@@ -88,6 +88,18 @@ describe('OutputWriter', () => {
 
       expect(recMessages[0]).to.equal(`\t\t${msg}`);
     });
+
+    it('not indent outside of the increase indent block', () => {
+      let msg = fakeString();
+
+      sut.increaseIndent(() => {
+        sut.write(fakeString());
+      });
+
+      sut.write(msg);
+
+      expect(recMessages[1]).to.equal(msg);
+    });
   });
 });
 
