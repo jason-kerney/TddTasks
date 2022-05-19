@@ -67,5 +67,27 @@ describe('OutputWriter', () => {
       });
     });
   });
+
+  describe('increase indent should', () => {
+    it('indent message by one', () => {
+      let msg = fakeString();
+      sut.increaseIndent(() => {
+        sut.write(msg);
+      });
+
+      expect(recMessages[0]).to.equal(`\t${msg}`);
+    });
+
+    it('indent multiple when nested', () => {
+      let msg = fakeString();
+      sut.increaseIndent(() => {
+        sut.increaseIndent(() => {
+          sut.write(msg);
+        });
+      });
+
+      expect(recMessages[0]).to.equal(`\t\t${msg}`);
+    });
+  });
 });
 
