@@ -100,6 +100,34 @@ describe('OutputWriter', () => {
 
       expect(recMessages[1]).to.equal(msg);
     });
+
+    it('be error tolerant', () => {
+      let msg = fakeString();
+
+      try {
+        sut.increaseIndent(() => {
+          throw new Error("Boom!");
+
+        });
+      }
+      catch {}
+
+      sut.write(msg);
+
+      expect(recMessages[0]).to.equal(msg);
+    });
+
+    it('not de-indent', () => {
+      let msg = `\t${fakeString()}`;
+
+      (sut as any).indent--;
+
+      sut.increaseIndent(() => {});
+
+      sut.write(msg);
+
+      expect(recMessages[0]).to.equal(msg);
+    });
   });
 });
 
