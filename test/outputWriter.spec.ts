@@ -120,6 +120,7 @@ describe('OutputWriter', () => {
     it('not de-indent after increasing', () => {
       let msg = `\t${fakeString()}`;
 
+      // this is bad... never do this
       (sut as any).indent--;
 
       sut.increaseIndent(() => {});
@@ -132,6 +133,7 @@ describe('OutputWriter', () => {
     it('not de-indent', () => {
       let msg = `\t${fakeString()}`;
 
+      // this is bad... never do this
       (sut as any).indent--;
 
       sut.write(msg);
