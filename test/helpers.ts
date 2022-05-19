@@ -196,19 +196,24 @@ export function setupRandomEnvironment(container: IContainer, range: DateRange):
   return dateHelper;
 }
 
-export function addRandomTasks(tasks: ITask[], taskBuilder: TaskConstructor, activity?: Activity) {
+export function getRandomTask(container: IContainer, activity?: Activity) {
+  let taskBuilder: TaskConstructor = container.build(ITask);
   let task = taskBuilder(fakeString(), fakeSize())
 
   if (activity !== undefined) {
     task.changeState(fakeString('state'), activity);
   }
 
-  tasks.push(task);
+  return task;
 }
 
-export function addNRandomTasks(tasks: ITask[], taskBuilder: TaskConstructor, n: number, activity?: Activity) {
+export function addRandomTasks(tasks: ITask[], container: IContainer, activity?: Activity) {
+  tasks.push(getRandomTask(container, activity));
+}
+
+export function addNRandomTasks(tasks: ITask[], container: IContainer, n: number, activity?: Activity) {
   for (let index = 0; index < n; index++) {
-    addRandomTasks(tasks, taskBuilder, activity)
+    addRandomTasks(tasks, container, activity)
   }
 }
 
@@ -217,4 +222,34 @@ export function getRandomBetween(min: number, max: number = 10000) {
   max = Math.floor(max);
 
   return Math.floor(Math.random() * max) + min;
+}
+
+export function getRandomThing(container: IContainer) : any {
+  let choice = getRandomBetween(1, 5);
+  switch (choice) {
+    case 1:
+      return fakeString();
+    case 2:
+      return fakeActivity();
+    case 3:
+      return fakeSize();
+    case 4:
+      return getRandomTask(container);
+    default:
+      return getRandomBetween(-1000, 1000);
+  }
+}
+
+export function getNRandomThings(container: IContainer, n: number) : any[] {
+  let r: any[] = [];
+
+  for (let index = 0; index < n; index++) {
+    r.push(getRandomThing(container));
+  }
+
+  return r;
+}
+
+export function getRandomNOfRandomThings(container: IContainer) : any[] {
+  return getNRandomThings(container, getRandomBetween(1, 20));
 }

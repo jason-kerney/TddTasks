@@ -4,7 +4,6 @@ import { ITeamBucket, TeamBucketConstructor } from "@/teamBucket";
 import { addNRandomTasks, cleanFakeSize, DateHelper, fakeSize, fakeString } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, TaskFilterConstructor } from "@/taskFilter";
 import { ITask, TaskConstructor } from "@/task";
-import { IWriter } from "@/outputWritter";
 
 class FakeFilter implements ITaskFilter {
   private callback: () => ITask[];
@@ -56,9 +55,7 @@ describe('Team Bucket should', () => {
     let dateHelper = new DateHelper();
     dateHelper.registerWith(container);
 
-
-    let taskBuilder: TaskConstructor = container.build(ITask);
-    addNRandomTasks(expectedTasks, taskBuilder, 20);
+    addNRandomTasks(expectedTasks, container, 20);
 
     teamBucketConstructor = container.build(ITeamBucket);
     sut = teamBucketConstructor("team A's queue");

@@ -1,6 +1,6 @@
 import { getContainer, IContainer } from "@/container";
 import { expect } from "chai";
-import { ITask, TaskConstructor } from "@/task";
+import { ITask } from "@/task";
 import { addNRandomTasks, DateRange, getRandomBetween, setupRandomEnvironment, DateHelper, buildDateRangeBy } from "./helpers";
 import { ITaskFilter, ITaskFilterCriteria, taskFilterBuilder, TaskFilterConstructor } from "@/taskFilter";
 
@@ -73,12 +73,11 @@ describe('filter tasks by', () => {
 
     dateHelper = setupRandomEnvironment(container, new DateRange(new Date("1-JAN-2020"), new Date("31-JAN-2020")));
 
-    let taskBuilder: TaskConstructor = container.build(ITask);
     tasksFilterBuilder = container.build(ITaskFilter);
 
     workingRange = buildDateRangeBy(dateHelper, _ => {
-      addNRandomTasks(baseTasks, taskBuilder, numberOfActive, 'Active');
-      addNRandomTasks(baseTasks, taskBuilder, numberOfInactive, 'Non-Active');
+      addNRandomTasks(baseTasks, container, numberOfActive, 'Active');
+      addNRandomTasks(baseTasks, container, numberOfInactive, 'Non-Active');
     });
 
     startDate = workingRange.getStart();
