@@ -38,8 +38,14 @@ class Writer extends IWriter {
 
 export type WriterConstructor = () => IWriter;
 
+let writer: IWriter | undefined;
+
 export function writerBuilder(factory: IContainer): WriterConstructor {
   return function (): IWriter {
-    return new Writer(factory.build(IConsole)());
+    if (writer === undefined) {
+      writer = new Writer(factory.build(IConsole)());
+    }
+
+    return writer;
   };
 }
