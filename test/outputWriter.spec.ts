@@ -2,6 +2,7 @@ import { IConsole } from "@/consoleWrapper";
 import { getContainer, IContainer } from "@/container";
 import { IWriter, WriterConstructor } from "@/outputWritter";
 import { expect } from "chai";
+import { fakeString } from "./helpers";
 
 describe('OutputWriter should', () => {
   let container: IContainer;
@@ -43,6 +44,14 @@ describe('OutputWriter should', () => {
     expect(recMessages[0], 'message').to.equal('');
     expect(recParameters).to.have.lengthOf(1);
     expect(recParameters[0], 'parameters').to.have.lengthOf(0);
+  });
+
+  it('writes a message to console', () => {
+    let msg = fakeString();
+    sut.write(msg);
+
+    expect(recMessages).to.have.lengthOf(1);
+    expect(recMessages[0], 'message').to.equal(msg);
   });
 });
 
