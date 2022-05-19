@@ -117,12 +117,22 @@ describe('OutputWriter', () => {
       expect(recMessages[0]).to.equal(msg);
     });
 
-    it('not de-indent', () => {
+    it('not de-indent after increasing', () => {
       let msg = `\t${fakeString()}`;
 
       (sut as any).indent--;
 
       sut.increaseIndent(() => {});
+
+      sut.write(msg);
+
+      expect(recMessages[0]).to.equal(msg);
+    });
+
+    it('not de-indent', () => {
+      let msg = `\t${fakeString()}`;
+
+      (sut as any).indent--;
 
       sut.write(msg);
 
